@@ -12,6 +12,7 @@ from .ipft import IPFTAlgorithm
 from .bwoaif import BWOAIAlgorithm
 from .rcd import RCDAlgorithm
 from .pregan import PreGANAlgorithm
+from .craft_edge import CRAFTEdgePipeline
 
 __all__ = [
     "BaseFaultToleranceAlgorithm",
@@ -20,8 +21,10 @@ __all__ = [
     "RCADiagnosisResult",
     "MitigationResult",
     "CausalFaultTolerancePipeline",
+    "CRAFTEdgePipeline",
     "IPFTAlgorithm",
     "BWOAIAlgorithm",
     "RCDAlgorithm",
     "PreGANAlgorithm",
 ]
+

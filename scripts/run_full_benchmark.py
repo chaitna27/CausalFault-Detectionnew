@@ -26,6 +26,7 @@ if hasattr(torch, "set_num_interop_threads"):
 
 from algorithms import (
     CausalFaultTolerancePipeline,
+    CRAFTEdgePipeline,
     IPFTAlgorithm,
     BWOAIAlgorithm,
     RCDAlgorithm,
@@ -97,7 +98,7 @@ def run_benchmark_trial(
     harness = CommonDataHarness(config)
 
     algo = algo_cls()
-    algo.initialize({"threshold": threshold, "upper_threshold": threshold})
+    algo.initialize({"threshold": threshold, "upper_threshold": threshold, "detection_threshold": threshold})
     algo.fit(train_data)
     algo.start()
 
@@ -111,6 +112,7 @@ def run_benchmark_trial(
     diag_times = []
     rec_times = []
     inference_latencies_ms = []
+    recovery_outcomes = []
 
     warmup_count = 0
     eval_count = 0
@@ -157,6 +159,18 @@ def run_benchmark_trial(
                 success=mit.success
             )
             rec_times.append(obs.timestamp + (t_proc_ms / 1000.0) + 0.05)
+
+        # Record explicit recovery outcomes when produced (e.g. by CRAFT-Edge)
+        outcome = res.raw_output.get("outcome")
+        if outcome is not None and getattr(outcome, "action", "NO_ACTION") != "NO_ACTION":
+            recovery_outcomes.append({
+                "action": outcome.action,
+                "execution_applied": outcome.execution_applied,
+                "benefit": outcome.benefit,
+                "cost": outcome.cost,
+                "reward": outcome.reward,
+                "success": outcome.success,
+            })
 
         diag = res.raw_output.get("diagnosis")
         if diag:
@@ -215,6 +229,16 @@ def run_benchmark_trial(
         "mttr_seconds": round(mttr_s, 4) if algo.supports(AlgorithmCapability.CLOSED_LOOP_FAULT_TOLERANCE) else "NOT_APPLICABLE",
         "total_actions": summary["total_actions"],
         "slo_violation_rate": summary["slo_violation_rate"],
+        "recovery_summary": {
+            "total_recovery_episodes": len(recovery_outcomes),
+            "successful_recoveries": sum(1 for o in recovery_outcomes if o["success"]),
+            "recovery_success_rate": round(sum(1 for o in recovery_outcomes if o["success"]) / max(1, len(recovery_outcomes)), 4) if recovery_outcomes else 0.0,
+            "mean_reward": round(float(np.mean([o["reward"] for o in recovery_outcomes])), 4) if recovery_outcomes else 0.0,
+            "mean_estimated_benefit": round(float(np.mean([o["benefit"] for o in recovery_outcomes])), 4) if recovery_outcomes else 0.0,
+            "mean_operational_cost": round(float(np.mean([o["cost"] for o in recovery_outcomes])), 4) if recovery_outcomes else 0.0,
+            "benefit_measurement_type": "SHADOW_SYNTHETIC_PROXY",
+            "measurement_notice": "Shadow-state proxy estimates; NOT physical hardware readings.",
+        } if recovery_outcomes else "NOT_APPLICABLE",
     }
 
 
@@ -241,34 +265,64 @@ def aggregate_trials(trials: List[Dict[str, Any]]) -> Dict[str, Any]:
 
     # Pass-through non-numeric or conditional fields from first trial
     for k in ["mttd_ms", "diagnosis_latency_ms", "recovery_latency_ms", "end_to_end_latency_ms",
-              "availability_percent", "mttf_seconds", "mttr_seconds", "migration_bandwidth_kb_sec"]:
+              "availability_percent", "mttf_seconds", "mttr_seconds", "migration_bandwidth_kb_sec",
+              "recovery_summary"]:
         agg[k] = trials[0].get(k, "NOT_APPLICABLE")
 
     return agg
 
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="Full Common Test Benchmark Runner")
+    parser.add_argument("--max-records", type=int, default=25000, help="Total evaluation records per run")
+    parser.add_argument("--warmup-records", type=int, default=1000, help="Warmup records count")
+    parser.add_argument("--seeds", nargs="+", type=int, default=[42, 43, 44], help="Random seeds for trials")
+    parser.add_argument("--algorithms", nargs="+", type=str, default=["all"], help="Algorithms to run ('all' or specific IDs)")
+    parser.add_argument("--output", type=str, default=os.path.join("results", "raw", "full_benchmark_results.json"), help="Output JSON path")
+    args = parser.parse_args()
+
     train_data = load_training_sample(1000)
     hw_capacity = get_hardware_capacity()
 
-    with open(os.path.join("results", "tables", "threshold_calibration.json")) as f:
-        calib = json.load(f)
+    calib_path = os.path.join("results", "tables", "threshold_calibration.json")
+    calib = {}
+    if os.path.exists(calib_path):
+        with open(calib_path) as f:
+            calib = json.load(f)
 
-    # 5 Algorithms with calibrated thresholds
-    algorithms = [
-        (CausalFaultTolerancePipeline, "proposed_causal_ft", "Proposed Causal FT", calib["proposed_causal_ft"]["selected_threshold"]),
-        (IPFTAlgorithm, "paper1_ipft", "IPFT (Theodoropoulos et al., 2022)", calib["paper1_ipft"]["selected_threshold"]),
-        (BWOAIAlgorithm, "paper2_bwoaif", "BWOAIF (Hannák et al., 2023)", calib["paper2_bwoaif"]["selected_threshold"]),
+    craft_edge_tau = calib.get("craft_edge", {}).get("selected_threshold", 0.65)
+
+    all_algorithms = [
+        (CausalFaultTolerancePipeline, "proposed_causal_ft", "Proposed Causal FT", calib.get("proposed_causal_ft", {}).get("selected_threshold", 0.15)),
+        (CRAFTEdgePipeline, "proposed_craft_edge", "CRAFT-Edge (Ours, Adaptive Efficacy)", craft_edge_tau),
+        (IPFTAlgorithm, "paper1_ipft", "IPFT (Theodoropoulos et al., 2022)", calib.get("paper1_ipft", {}).get("selected_threshold", 0.01)),
+        (BWOAIAlgorithm, "paper2_bwoaif", "BWOAIF (Hannák et al., 2023)", calib.get("paper2_bwoaif", {}).get("selected_threshold", 0.49)),
         (RCDAlgorithm, "paper3_rcd", "RCD (Ikram et al., 2022)", 0.05),
-        (PreGANAlgorithm, "paper4_pregan", "PreGAN (Tuli et al., 2022)", calib["paper4_pregan"]["selected_threshold"]),
+        (PreGANAlgorithm, "paper4_pregan", "PreGAN (Tuli et al., 2022)", calib.get("paper4_pregan", {}).get("selected_threshold", 0.01)),
     ]
 
-    seeds = [42, 43, 44]
+    if "all" in args.algorithms:
+        algorithms = all_algorithms
+    else:
+        sel_lower = [a.lower() for a in args.algorithms]
+        algorithms = [
+            (cls, aid, name, tau) for cls, aid, name, tau in all_algorithms
+            if aid.lower() in sel_lower or any(s in aid.lower() for s in sel_lower)
+        ]
+        if not algorithms:
+            print(f"Warning: No algorithms matched {args.algorithms}; running all algorithms.")
+            algorithms = all_algorithms
+
+    seeds = args.seeds
+    total_records = args.max_records
+    warmup_records = args.warmup_records
+
     benchmark_results = {
         "hardware_capacity": hw_capacity,
         "seeds": seeds,
-        "total_records_per_run": 25000,
-        "warmup_records": 1000,
+        "total_records_per_run": total_records,
+        "warmup_records": warmup_records,
         "algorithms": {},
     }
 
@@ -282,8 +336,8 @@ def main():
                 threshold=tau,
                 train_data=train_data,
                 seed=s,
-                total_records=25000,
-                warmup_records=1000,
+                total_records=total_records,
+                warmup_records=warmup_records,
             )
             trials.append(res)
 
@@ -295,7 +349,7 @@ def main():
             "trials": trials,
         }
 
-    out_path = os.path.join("results", "raw", "full_benchmark_results.json")
+    out_path = args.output
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w") as f:
         json.dump(benchmark_results, f, indent=2)

@@ -46,6 +46,9 @@ from detection.pytorch_detector import PyTorchFaultDetector
 from causal.causal_graph import SystemCausalGraph
 from causal.causal_analysis import CausalAnalyzer, CausalResult
 from recovery.recovery_manager import RecoveryManager, RecoveryDecision, FaultEpisode
+from algorithms.craft_edge import CRAFTEdgePipeline, CRAFTEdgeConfig
+from evaluation.data_harness import CommonDataHarness, StreamConfig
+from evaluation.context import BenchmarkInput
 
 # Setup logging configuration
 logging.basicConfig(
@@ -85,9 +88,84 @@ def parse_args():
     parser.add_argument(
         "--mode",
         type=str,
-        choices=["simulation", "dataset", "experiment", "sensitivity"],
+        choices=["simulation", "dataset", "experiment", "sensitivity", "craft_edge"],
         default="simulation",
-        help="Operational mode: 'simulation', 'dataset', 'experiment', or 'sensitivity'",
+        help="Operational mode: 'simulation', 'dataset', 'experiment', 'sensitivity', or 'craft_edge'",
+    )
+    parser.add_argument(
+        "--algorithm",
+        type=str,
+        choices=["baseline", "craft_edge"],
+        default="baseline",
+        help="Algorithm selection ('baseline' or 'craft_edge')",
+    )
+    parser.add_argument(
+        "--learning-rate",
+        type=float,
+        default=0.20,
+        help="CRAFT-Edge policy learning rate (alpha)",
+    )
+    parser.add_argument(
+        "--epsilon",
+        type=float,
+        default=0.15,
+        help="CRAFT-Edge exploration rate (epsilon)",
+    )
+    parser.add_argument(
+        "--epsilon-min",
+        type=float,
+        default=0.02,
+        help="CRAFT-Edge minimum exploration rate",
+    )
+    parser.add_argument(
+        "--epsilon-decay",
+        type=float,
+        default=0.995,
+        help="CRAFT-Edge exploration decay factor",
+    )
+    parser.add_argument(
+        "--decay-interval",
+        type=int,
+        default=1,
+        help="Updates or episodes between exploration decay steps",
+    )
+    parser.add_argument(
+        "--decay-mode",
+        type=str,
+        choices=["interval", "episode"],
+        default="interval",
+        help="Exploration decay trigger mode ('interval' or 'episode')",
+    )
+    parser.add_argument(
+        "--benefit-weight",
+        type=float,
+        default=1.0,
+        help="Outcome evaluator benefit weight",
+    )
+    parser.add_argument(
+        "--cost-weight",
+        type=float,
+        default=0.30,
+        help="Outcome evaluator operational cost weight",
+    )
+    parser.add_argument(
+        "--detection-threshold",
+        type=float,
+        default=0.65,
+        help="CRAFT-Edge anomaly detection threshold",
+    )
+    parser.add_argument(
+        "--train-samples",
+        type=int,
+        default=1000,
+        help="Number of baseline training samples used to fit CRAFT-Edge",
+    )
+    parser.add_argument(
+        "--split",
+        type=str,
+        choices=["test", "validation", "train"],
+        default="test",
+        help="Data split to evaluate when running CRAFT-Edge dataset stream",
     )
     parser.add_argument(
         "--dataset",
@@ -986,12 +1064,233 @@ def run_multi_seed_experiment(seed_start: int = 42, num_seeds: int = 10, output_
     return df_agg
 
 
+def run_craft_edge_experiment(args: argparse.Namespace) -> Dict[str, Any]:
+    # Runs the CRAFT-Edge pipeline on real dataset stream or physical simulation.
+    # Strictly isolates labels from model inputs and provides complete recovery reporting.
+    set_reproducible_seed(args.seed)
+    logger.info("================================================================================")
+    logger.info("        CRAFT-EDGE: CAUSAL REAL-TIME ADAPTIVE FAULT TOLERANCE EXECUTION         ")
+    logger.info("================================================================================")
+    logger.info(f"Seed: {args.seed} | Mode: {args.mode} | Split: {args.split} | Max Records: {args.max_records or 'ALL'}")
+
+    out_data_dir = os.path.join(args.output_dir, "data")
+    out_plots_dir = os.path.join(args.output_dir, "plots")
+    os.makedirs(out_data_dir, exist_ok=True)
+    os.makedirs(out_plots_dir, exist_ok=True)
+
+    # 1. Load Training Baseline (STRICT LABEL ISOLATION)
+    feature_names = []
+    art_path = os.path.join("data", "processed", "artifacts", "feature_names.json")
+    if os.path.exists(art_path):
+        import json
+        with open(art_path, "r") as f:
+            feature_names = json.load(f)
+
+    train_path = os.path.join("data", "processed", "train", "train_01_processed.csv")
+    if os.path.exists(train_path) and feature_names:
+        logger.info(f"Fitting CRAFT-Edge baseline on {args.train_samples} training samples from {train_path}...")
+        df_train = pd.read_csv(train_path, nrows=args.train_samples)
+        # Verify and ensure label columns are never included
+        clean_cols = [c for c in feature_names if c in df_train.columns and c not in ["Attack_label", "Attack_type", "label", "fault_label"]]
+        X_train = df_train[clean_cols].values
+    else:
+        logger.info("Fitting CRAFT-Edge baseline on synthetic normal telemetry...")
+        clean_cols = feature_names or [f"f_{i}" for i in range(62)]
+        X_train = np.random.normal(0.0, 1.0, size=(args.train_samples, len(clean_cols)))
+
+    is_sim_mode = (args.mode == "simulation")
+    sim_instance = None
+    if is_sim_mode:
+        sim_instance = EdgeSimulation(num_nodes=args.num_nodes if hasattr(args, "num_nodes") else 3, seed=args.seed)
+
+    # 2. Instantiate CRAFT-Edge Pipeline
+    pipeline = CRAFTEdgePipeline(
+        config={
+            "detection_threshold": args.detection_threshold,
+            "learning_rate": args.learning_rate,
+            "epsilon": args.epsilon,
+            "epsilon_min": args.epsilon_min,
+            "epsilon_decay": args.epsilon_decay,
+            "decay_interval": args.decay_interval,
+            "decay_mode": args.decay_mode,
+            "benefit_weight": args.benefit_weight,
+            "cost_weight": args.cost_weight,
+            "seed": args.seed,
+        },
+        simulation=sim_instance,
+    )
+    pipeline.fit(X_train, feature_names=clean_cols)
+    pipeline.start()
+
+    # 3. Stream Observations
+    data_dir = args.data_path if os.path.exists(args.data_path) else os.path.join("data", "processed", args.split)
+    logger.info(f"Streaming observations from {data_dir}...")
+
+    stream_config = StreamConfig(
+        dataset_name=args.dataset,
+        split=args.split,
+        data_dir=data_dir,
+        artifacts_dir="data/processed/artifacts",
+        warmup_count=0,
+        max_records=args.max_records,
+        seed=args.seed,
+    )
+    harness = CommonDataHarness(stream_config)
+
+    y_true: List[int] = []
+    y_pred: List[int] = []
+    scores: List[float] = []
+    latencies_ms: List[float] = []
+    recovery_outcomes: List[Dict[str, Any]] = []
+
+    start_stream_t = time.time()
+    n_processed = 0
+
+    for ctx in harness.stream_contexts():
+        obs = ctx.observable_input
+        gt = ctx.ground_truth
+
+        n_processed += 1
+        t_start = time.perf_counter_ns()
+        res = pipeline.process(obs)
+        proc_latency = (time.perf_counter_ns() - t_start) / 1_000_000.0
+
+        latencies_ms.append(proc_latency)
+        is_attack = 1 if gt.is_fault else 0
+        is_pred = 1 if res.is_anomaly else 0
+
+        y_true.append(is_attack)
+        y_pred.append(is_pred)
+        scores.append(res.anomaly_score)
+
+        outcome = res.raw_output.get("outcome")
+        if outcome is not None and getattr(outcome, "action", "NO_ACTION") != "NO_ACTION":
+            recovery_outcomes.append({
+                "record_position": obs.stream_position,
+                "timestamp": obs.timestamp,
+                "edge_node_id": obs.edge_node_id,
+                "action": outcome.action,
+                "execution_applied": outcome.execution_applied,
+                "target_metric": outcome.target_metric,
+                "metric_before": outcome.metric_before,
+                "metric_after": outcome.metric_after,
+                "benefit": outcome.benefit,
+                "cost": outcome.cost,
+                "reward": outcome.reward,
+                "success": outcome.success,
+            })
+
+        if n_processed % 5000 == 0:
+            logger.info(f"Progress: Processed {n_processed:,} records ({n_processed / max(1.0, time.time() - start_stream_t):,.1f} rec/sec) - Anomalies: {sum(y_pred):,}")
+
+    total_time_sec = time.time() - start_stream_t
+    pipeline.stop()
+
+    # 4. Compute Metrics
+    y_t = np.array(y_true)
+    y_p = np.array(y_pred)
+
+    tp = int(np.sum((y_t == 1) & (y_p == 1)))
+    fp = int(np.sum((y_t == 0) & (y_p == 1)))
+    fn = int(np.sum((y_t == 1) & (y_p == 0)))
+    tn = int(np.sum((y_t == 0) & (y_p == 0)))
+
+    accuracy = (tp + tn) / max(1, len(y_t))
+    precision = tp / max(1, tp + fp)
+    recall = tp / max(1, tp + fn)
+    f1 = 2 * precision * recall / max(1e-6, precision + recall)
+    fpr = fp / max(1, fp + tn)
+    avg_lat_ms = float(np.mean(latencies_ms)) if latencies_ms else 0.0
+
+    rec_attempts = len(recovery_outcomes)
+    rec_successes = sum(1 for o in recovery_outcomes if o["success"])
+    rec_rate = (rec_successes / max(1, rec_attempts)) * 100.0 if rec_attempts > 0 else 0.0
+    mean_reward = float(np.mean([o["reward"] for o in recovery_outcomes])) if rec_attempts > 0 else 0.0
+    mean_benefit = float(np.mean([o["benefit"] for o in recovery_outcomes])) if rec_attempts > 0 else 0.0
+    mean_cost = float(np.mean([o["cost"] for o in recovery_outcomes])) if rec_attempts > 0 else 0.0
+
+    measurement_type = "PHYSICAL_SIMULATION" if is_sim_mode else "SHADOW_SYNTHETIC_PROXY"
+
+    # 5. Save Results CSVs
+    detection_row = [{
+        "algorithm": "CRAFT-Edge",
+        "dataset_name": args.dataset,
+        "split": args.split,
+        "records_processed": n_processed,
+        "true_positives": tp,
+        "false_positives": fp,
+        "false_negatives": fn,
+        "true_negatives": tn,
+        "accuracy": round(float(accuracy), 4),
+        "precision": round(float(precision), 4),
+        "recall": round(float(recall), 4),
+        "f1_score": round(float(f1), 4),
+        "false_positive_rate": round(float(fpr), 4),
+        "avg_detection_latency_ms": round(avg_lat_ms, 4),
+        "total_recovery_episodes": rec_attempts,
+        "successful_recoveries": rec_successes,
+        "recovery_success_rate": round(rec_rate, 2),
+        "mean_recovery_reward": round(mean_reward, 4),
+        "mean_estimated_benefit": round(mean_benefit, 4),
+        "mean_operational_cost": round(mean_cost, 4),
+        "benefit_measurement_type": measurement_type,
+        "measurement_notice": (
+            "Direct physical simulation measurement." if is_sim_mode else
+            "Shadow-state synthetic proxy estimates; NOT physical hardware readings."
+        ),
+    }]
+    df_det = pd.DataFrame(detection_row)
+    csv_det = os.path.join(out_data_dir, "craft_edge_detection_metrics.csv")
+    df_det.to_csv(csv_det, index=False)
+
+    csv_rec = os.path.join(out_data_dir, "craft_edge_recovery_outcomes.csv")
+    if recovery_outcomes:
+        df_rec = pd.DataFrame(recovery_outcomes)
+        df_rec.to_csv(csv_rec, index=False)
+    else:
+        pd.DataFrame([{
+            "record_position": 0, "action": "NO_ACTION", "execution_applied": True,
+            "benefit": 0.0, "cost": 0.0, "reward": 0.0, "success": True
+        }]).to_csv(csv_rec, index=False)
+
+    # 6. Format and Print Summary Table
+    print("\n")
+    print("==========================================================================================")
+    print("                         CRAFT-EDGE EXPERIMENT RESULTS SUMMARY                            ")
+    print("==========================================================================================")
+    print(f"Data Split / Source:        {args.dataset.upper()} ({data_dir})")
+    print(f"Total Records Streamed:     {n_processed:,}")
+    print(f"Elapsed Time:               {total_time_sec:.2f} s ({n_processed / max(1.0, total_time_sec):,.1f} rec/s)")
+    print("------------------------------------------------------------------------------------------")
+    print("DETECTION PERFORMANCE (Evaluated against ground truth; labels kept out of model inputs):")
+    print(f"  Precision:                {precision * 100:.2f}%")
+    print(f"  Recall:                   {recall * 100:.2f}%")
+    print(f"  F1-Score:                 {f1 * 100:.2f}%")
+    print(f"  False Positive Rate:      {fpr * 100:.2f}%")
+    print(f"  Avg Inference Latency:    {avg_lat_ms:.4f} ms / observation")
+    print("------------------------------------------------------------------------------------------")
+    print("ADAPTIVE RECOVERY PERFORMANCE:")
+    print(f"  Recovery Episodes:        {rec_attempts}")
+    print(f"  Successful Recoveries:    {rec_successes}")
+    print(f"  Recovery Success Rate:    {rec_rate:.2f}%")
+    print(f"  Mean Recovery Reward:     {mean_reward:.4f}")
+    print(f"  Mean Estimated Benefit:   {mean_benefit:.4f}")
+    print(f"  Mean Operational Cost:    {mean_cost:.4f}")
+    print(f"  Measurement Nature:       {measurement_type} ({detection_row[0]['measurement_notice']})")
+    print("==========================================================================================\n")
+
+    return detection_row[0]
+
+
 def main():
     args = parse_args()
     logger.info("  Causal Real-Time Adaptive Fault Tolerance for Edge-IoT Systems  ")
     logger.info(f"Mode: {args.mode} | Seed: {args.seed} | Persistence: {args.persistence}")
 
-    if args.mode == "experiment":
+    if args.mode == "craft_edge" or args.algorithm == "craft_edge":
+        run_craft_edge_experiment(args)
+
+    elif args.mode == "experiment":
         run_multi_seed_experiment(seed_start=args.seed_start, num_seeds=args.num_seeds, output_dir=args.output_dir)
 
     elif args.mode == "sensitivity":
