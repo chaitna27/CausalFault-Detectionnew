@@ -1,0 +1,101 @@
+algorithm_id,algorithm_name,category,metric,unit,status,seed_42,seed_43,seed_44,mean,std,ci_95_lower,ci_95_upper
+proposed_causal_ft,Proposed Causal FT,Detection,Detection Precision,%,VALID,26.2300,26.2300,26.2300,26.2300,0.0000,26.2300,26.2300
+proposed_causal_ft,Proposed Causal FT,Detection,Detection Recall,%,VALID,2.6600,2.6600,2.6600,2.6600,0.0000,2.6600,2.6600
+proposed_causal_ft,Proposed Causal FT,Detection,Detection F1-Score,%,VALID,4.8400,4.8400,4.8400,4.8400,0.0000,4.8400,4.8400
+proposed_causal_ft,Proposed Causal FT,Detection,ROC-AUC,score,VALID,0.7094,0.7094,0.7094,0.7094,0.0000,0.7094,0.7094
+proposed_causal_ft,Proposed Causal FT,Detection,PR-AUC,score,VALID,0.3780,0.3780,0.3780,0.3780,0.0000,0.3780,0.3780
+proposed_causal_ft,Proposed Causal FT,Detection,Mean Detection Delay (MTTD),ms,VALID,13660.1530,13660.1530,13660.1530,13660.1530,0.0000,13660.1530,13660.1530
+proposed_causal_ft,Proposed Causal FT,Diagnosis,Root-Cause Diagnosis Latency,ms,VALID,10807.8120,10807.8120,10807.8120,10807.8120,0.0000,10807.8120,10807.8120
+proposed_causal_ft,Proposed Causal FT,Mitigation,Recovery Latency,ms,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+proposed_causal_ft,Proposed Causal FT,Reliability,Service Availability,%,VALID,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000
+proposed_causal_ft,Proposed Causal FT,Mitigation,Preemptive Migration Bandwidth,KB/s,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+proposed_causal_ft,Proposed Causal FT,Mitigation,Operational Recovery Cost,score,VALID,0.0032,0.0032,0.0032,0.0032,0.0000,0.0032,0.0032
+proposed_causal_ft,Proposed Causal FT,Computation,Processing Throughput,rec/s,VALID,1925.6100,1906.3500,1937.7200,1923.2267,15.8202,1905.3244,1941.1289
+proposed_causal_ft,Proposed Causal FT,Computation,Per-Record Inference Latency (Mean),ms/rec,VALID,0.0415,0.0408,0.0406,0.0410,0.0005,0.0404,0.0415
+proposed_causal_ft,Proposed Causal FT,Computation,Per-Record Inference Latency (P95),ms/rec,VALID,0.0663,0.0658,0.0654,0.0658,0.0005,0.0653,0.0663
+proposed_causal_ft,Proposed Causal FT,Resource,Average CPU Utilization,%,VALID,99.7800,99.3200,99.0700,99.3900,0.3601,98.9825,99.7975
+proposed_causal_ft,Proposed Causal FT,Resource,Peak Resident Set Size (RSS),MB,VALID,332.1600,332.0400,334.0700,332.7567,1.1390,331.4678,334.0455
+proposed_causal_ft,Proposed Causal FT,Resource,Total Telemetry Bandwidth,KB/s,VALID,2165.2600,2143.6100,2178.8900,2162.5867,17.7913,2142.4539,2182.7194
+proposed_causal_ft,Proposed Causal FT,Resource,Estimated Energy Consumption,Joules,VALID,79.6022,80.2620,78.7856,79.5499,0.7396,78.7130,80.3869
+proposed_causal_ft,Proposed Causal FT,Mitigation,Total Mitigation Actions,count,VALID,194.0000,194.0000,194.0000,194.0000,0.0000,194.0000,194.0000
+proposed_causal_ft,Proposed Causal FT,Computation,SLO Violation Rate,%,VALID,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000
+paper1_ipft,"IPFT (Theodoropoulos et al., 2022)",Detection,Detection Precision,%,VALID,23.3000,23.3000,23.3000,23.3000,0.0000,23.3000,23.3000
+paper1_ipft,"IPFT (Theodoropoulos et al., 2022)",Detection,Detection Recall,%,VALID,100.0000,100.0000,100.0000,100.0000,0.0000,100.0000,100.0000
+paper1_ipft,"IPFT (Theodoropoulos et al., 2022)",Detection,Detection F1-Score,%,VALID,37.8000,37.8000,37.8000,37.8000,0.0000,37.8000,37.8000
+paper1_ipft,"IPFT (Theodoropoulos et al., 2022)",Detection,ROC-AUC,score,VALID,0.6073,0.4722,0.4359,0.5051,0.0903,0.4029,0.6073
+paper1_ipft,"IPFT (Theodoropoulos et al., 2022)",Detection,PR-AUC,score,VALID,0.2937,0.2504,0.1946,0.2462,0.0497,0.1900,0.3025
+paper1_ipft,"IPFT (Theodoropoulos et al., 2022)",Detection,Mean Detection Delay (MTTD),ms,VALID,0.0000,0.0010,0.0010,0.0007,0.0006,0.0000,0.0013
+paper1_ipft,"IPFT (Theodoropoulos et al., 2022)",Diagnosis,Root-Cause Diagnosis Latency,ms,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+paper1_ipft,"IPFT (Theodoropoulos et al., 2022)",Mitigation,Recovery Latency,ms,VALID,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000
+paper1_ipft,"IPFT (Theodoropoulos et al., 2022)",Reliability,Service Availability,%,VALID,100.0000,100.0000,100.0000,100.0000,0.0000,100.0000,100.0000
+paper1_ipft,"IPFT (Theodoropoulos et al., 2022)",Mitigation,Preemptive Migration Bandwidth,KB/s,VALID,100647.4800,37290.3200,54518.9500,64152.2500,32758.7054,27082.2851,101222.2149
+paper1_ipft,"IPFT (Theodoropoulos et al., 2022)",Mitigation,Operational Recovery Cost,score,VALID,0.0267,0.0267,0.0267,0.0267,0.0000,0.0267,0.0267
+paper1_ipft,"IPFT (Theodoropoulos et al., 2022)",Computation,Processing Throughput,rec/s,VALID,981.1300,364.0800,532.3200,625.8433,318.9791,264.8846,986.8021
+paper1_ipft,"IPFT (Theodoropoulos et al., 2022)",Computation,Per-Record Inference Latency (Mean),ms/rec,VALID,0.4586,1.3623,0.8526,0.8912,0.4531,0.3785,1.4039
+paper1_ipft,"IPFT (Theodoropoulos et al., 2022)",Computation,Per-Record Inference Latency (P95),ms/rec,VALID,0.6953,2.3081,2.2010,1.7348,0.9018,0.7143,2.7553
+paper1_ipft,"IPFT (Theodoropoulos et al., 2022)",Resource,Average CPU Utilization,%,VALID,100.3600,96.9300,97.0000,98.0967,1.9604,95.8782,100.3151
+paper1_ipft,"IPFT (Theodoropoulos et al., 2022)",Resource,Peak Resident Set Size (RSS),MB,VALID,408.8100,412.6000,425.3700,415.5933,8.6763,405.7752,425.4115
+paper1_ipft,"IPFT (Theodoropoulos et al., 2022)",Resource,Total Telemetry Bandwidth,KB/s,VALID,100942.7800,37458.0600,54766.9500,64389.2633,32817.9692,27252.2351,101526.2915
+paper1_ipft,"IPFT (Theodoropoulos et al., 2022)",Resource,Estimated Energy Consumption,Joules,VALID,156.2745,414.2989,283.4897,284.6877,129.0164,138.6919,430.6835
+paper1_ipft,"IPFT (Theodoropoulos et al., 2022)",Mitigation,Total Mitigation Actions,count,VALID,1600.0000,1600.0000,1600.0000,1600.0000,0.0000,1600.0000,1600.0000
+paper1_ipft,"IPFT (Theodoropoulos et al., 2022)",Computation,SLO Violation Rate,%,VALID,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000
+paper2_bwoaif,"BWOAIF (Hannák et al., 2023)",Detection,Detection Precision,%,VALID,26.0100,26.0100,26.0100,26.0100,0.0000,26.0100,26.0100
+paper2_bwoaif,"BWOAIF (Hannák et al., 2023)",Detection,Detection Recall,%,VALID,79.5500,79.5500,79.5500,79.5500,0.0000,79.5500,79.5500
+paper2_bwoaif,"BWOAIF (Hannák et al., 2023)",Detection,Detection F1-Score,%,VALID,39.2000,39.2000,39.2000,39.2000,0.0000,39.2000,39.2000
+paper2_bwoaif,"BWOAIF (Hannák et al., 2023)",Detection,ROC-AUC,score,VALID,0.5872,0.5872,0.5872,0.5872,0.0000,0.5872,0.5872
+paper2_bwoaif,"BWOAIF (Hannák et al., 2023)",Detection,PR-AUC,score,VALID,0.2844,0.2844,0.2844,0.2844,0.0000,0.2844,0.2844
+paper2_bwoaif,"BWOAIF (Hannák et al., 2023)",Detection,Mean Detection Delay (MTTD),ms,VALID,14292.6280,14292.6280,14292.6280,14292.6280,0.0000,14292.6280,14292.6280
+paper2_bwoaif,"BWOAIF (Hannák et al., 2023)",Diagnosis,Root-Cause Diagnosis Latency,ms,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+paper2_bwoaif,"BWOAIF (Hannák et al., 2023)",Mitigation,Recovery Latency,ms,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+paper2_bwoaif,"BWOAIF (Hannák et al., 2023)",Reliability,Service Availability,%,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+paper2_bwoaif,"BWOAIF (Hannák et al., 2023)",Mitigation,Preemptive Migration Bandwidth,KB/s,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+paper2_bwoaif,"BWOAIF (Hannák et al., 2023)",Mitigation,Operational Recovery Cost,score,VALID,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000
+paper2_bwoaif,"BWOAIF (Hannák et al., 2023)",Computation,Processing Throughput,rec/s,VALID,1751.5500,1804.5100,1766.2600,1774.1067,27.3380,1743.1708,1805.0426
+paper2_bwoaif,"BWOAIF (Hannák et al., 2023)",Computation,Per-Record Inference Latency (Mean),ms/rec,VALID,0.0545,0.0530,0.0542,0.0539,0.0008,0.0530,0.0548
+paper2_bwoaif,"BWOAIF (Hannák et al., 2023)",Computation,Per-Record Inference Latency (P95),ms/rec,VALID,0.0870,0.0871,0.0854,0.0865,0.0010,0.0854,0.0876
+paper2_bwoaif,"BWOAIF (Hannák et al., 2023)",Resource,Average CPU Utilization,%,VALID,99.8300,99.3600,99.0800,99.4233,0.3790,98.9945,99.8522
+paper2_bwoaif,"BWOAIF (Hannák et al., 2023)",Resource,Peak Resident Set Size (RSS),MB,VALID,410.8400,407.7400,409.9500,409.5100,1.5962,407.7038,411.3162
+paper2_bwoaif,"BWOAIF (Hannák et al., 2023)",Resource,Total Telemetry Bandwidth,KB/s,VALID,848.4100,874.0600,855.5300,859.3333,13.2412,844.3495,874.3172
+paper2_bwoaif,"BWOAIF (Hannák et al., 2023)",Resource,Estimated Energy Consumption,Joules,VALID,87.5406,84.5216,86.1952,86.0858,1.5125,84.3743,87.7973
+paper2_bwoaif,"BWOAIF (Hannák et al., 2023)",Mitigation,Total Mitigation Actions,count,VALID,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000
+paper2_bwoaif,"BWOAIF (Hannák et al., 2023)",Computation,SLO Violation Rate,%,VALID,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000
+paper3_rcd,"RCD (Ikram et al., 2022)",Detection,Detection Precision,%,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+paper3_rcd,"RCD (Ikram et al., 2022)",Detection,Detection Recall,%,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+paper3_rcd,"RCD (Ikram et al., 2022)",Detection,Detection F1-Score,%,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+paper3_rcd,"RCD (Ikram et al., 2022)",Detection,ROC-AUC,score,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+paper3_rcd,"RCD (Ikram et al., 2022)",Detection,PR-AUC,score,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+paper3_rcd,"RCD (Ikram et al., 2022)",Detection,Mean Detection Delay (MTTD),ms,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+paper3_rcd,"RCD (Ikram et al., 2022)",Diagnosis,Root-Cause Diagnosis Latency,ms,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+paper3_rcd,"RCD (Ikram et al., 2022)",Mitigation,Recovery Latency,ms,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+paper3_rcd,"RCD (Ikram et al., 2022)",Reliability,Service Availability,%,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+paper3_rcd,"RCD (Ikram et al., 2022)",Mitigation,Preemptive Migration Bandwidth,KB/s,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+paper3_rcd,"RCD (Ikram et al., 2022)",Mitigation,Operational Recovery Cost,score,VALID,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000
+paper3_rcd,"RCD (Ikram et al., 2022)",Computation,Processing Throughput,rec/s,VALID,2147.8400,1927.6400,1914.5000,1996.6600,131.0905,1848.3172,2145.0028
+paper3_rcd,"RCD (Ikram et al., 2022)",Computation,Per-Record Inference Latency (Mean),ms/rec,VALID,0.0018,0.0019,0.0019,0.0019,0.0001,0.0018,0.0019
+paper3_rcd,"RCD (Ikram et al., 2022)",Computation,Per-Record Inference Latency (P95),ms/rec,VALID,0.0025,0.0028,0.0027,0.0027,0.0002,0.0025,0.0028
+paper3_rcd,"RCD (Ikram et al., 2022)",Resource,Average CPU Utilization,%,VALID,98.2400,98.6400,99.2000,98.6933,0.4822,98.1477,99.2390
+paper3_rcd,"RCD (Ikram et al., 2022)",Resource,Peak Resident Set Size (RSS),MB,VALID,411.5100,410.4400,411.4500,411.1333,0.6012,410.4530,411.8136
+paper3_rcd,"RCD (Ikram et al., 2022)",Resource,Total Telemetry Bandwidth,KB/s,VALID,1040.3600,933.7000,927.3300,967.1300,63.4990,895.2742,1038.9858
+paper3_rcd,"RCD (Ikram et al., 2022)",Resource,Estimated Energy Consumption,Joules,VALID,70.5932,78.9338,79.6721,76.3997,5.0421,70.6940,82.1054
+paper3_rcd,"RCD (Ikram et al., 2022)",Mitigation,Total Mitigation Actions,count,VALID,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000
+paper3_rcd,"RCD (Ikram et al., 2022)",Computation,SLO Violation Rate,%,VALID,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000
+paper4_pregan,"PreGAN (Tuli et al., 2022)",Detection,Detection Precision,%,VALID,23.3000,0.0000,23.3000,15.5333,13.4523,0.3107,30.7560
+paper4_pregan,"PreGAN (Tuli et al., 2022)",Detection,Detection Recall,%,VALID,100.0000,0.0000,100.0000,66.6667,57.7350,1.3333,132.0000
+paper4_pregan,"PreGAN (Tuli et al., 2022)",Detection,Detection F1-Score,%,VALID,37.8000,0.0000,37.8000,25.2000,21.8238,0.5040,49.8960
+paper4_pregan,"PreGAN (Tuli et al., 2022)",Detection,ROC-AUC,score,VALID,0.4835,0.4901,0.4318,0.4685,0.0319,0.4323,0.5046
+paper4_pregan,"PreGAN (Tuli et al., 2022)",Detection,PR-AUC,score,VALID,0.2535,0.2539,0.2245,0.2440,0.0169,0.2249,0.2630
+paper4_pregan,"PreGAN (Tuli et al., 2022)",Detection,Mean Detection Delay (MTTD),ms,VALID,0.0010,NOT_APPLICABLE,0.0020,0.0015,0.0007,0.0005,0.0025
+paper4_pregan,"PreGAN (Tuli et al., 2022)",Diagnosis,Root-Cause Diagnosis Latency,ms,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+paper4_pregan,"PreGAN (Tuli et al., 2022)",Mitigation,Recovery Latency,ms,VALID,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000
+paper4_pregan,"PreGAN (Tuli et al., 2022)",Reliability,Service Availability,%,VALID,100.0000,100.0000,100.0000,100.0000,0.0000,100.0000,100.0000
+paper4_pregan,"PreGAN (Tuli et al., 2022)",Mitigation,Preemptive Migration Bandwidth,KB/s,VALID,134735.7300,43.4300,67250.6900,67343.2833,67346.1977,-8866.1136,143552.6803
+paper4_pregan,"PreGAN (Tuli et al., 2022)",Mitigation,Operational Recovery Cost,score,VALID,0.0267,0.0000,0.0267,0.0178,0.0154,0.0004,0.0352
+paper4_pregan,"PreGAN (Tuli et al., 2022)",Computation,Processing Throughput,rec/s,VALID,492.9200,254.4100,246.1800,331.1700,140.1400,172.5866,489.7534
+paper4_pregan,"PreGAN (Tuli et al., 2022)",Computation,Per-Record Inference Latency (Mean),ms/rec,VALID,0.9808,1.9507,2.0087,1.6467,0.5774,0.9933,2.3002
+paper4_pregan,"PreGAN (Tuli et al., 2022)",Computation,Per-Record Inference Latency (P95),ms/rec,VALID,2.2826,3.6604,3.0127,2.9852,0.6893,2.2052,3.7653
+paper4_pregan,"PreGAN (Tuli et al., 2022)",Resource,Average CPU Utilization,%,VALID,97.2900,97.2300,97.0300,97.1833,0.1361,97.0293,97.3374
+paper4_pregan,"PreGAN (Tuli et al., 2022)",Resource,Peak Resident Set Size (RSS),MB,VALID,412.0300,412.0700,412.0400,412.0467,0.0208,412.0231,412.0702
+paper4_pregan,"PreGAN (Tuli et al., 2022)",Resource,Total Telemetry Bandwidth,KB/s,VALID,134839.0200,166.6500,67341.9600,67449.2100,67336.2491,-8748.9290,143647.3490
+paper4_pregan,"PreGAN (Tuli et al., 2022)",Resource,Estimated Energy Consumption,Joules,VALID,306.4299,593.9402,612.9724,504.4475,171.7521,310.0917,698.8033
+paper4_pregan,"PreGAN (Tuli et al., 2022)",Mitigation,Total Mitigation Actions,count,VALID,1600.0000,1.0000,1600.0000,1067.0000,923.1831,22.3200,2111.6800
+paper4_pregan,"PreGAN (Tuli et al., 2022)",Computation,SLO Violation Rate,%,VALID,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000

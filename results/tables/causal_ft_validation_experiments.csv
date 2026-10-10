@@ -1,0 +1,11 @@
+config_id,description,threshold,persistence_k,w_norm,w_ewma,precision,recall,f1,accuracy,balanced_accuracy,fpr,status
+VAL_EXP_01_BUGGY_DEFAULT,"Original bugged configuration (tau=0.65, k=1)",0.65,1,0.7,0.3,25.34,2.28,4.19,76.22,50.15,1.98,REJECTED (Buggy Default)
+VAL_EXP_02_CORRECTED_CALIBRATED,"Calibrated validation threshold (tau=0.15, k=1)",0.15,1,0.7,0.3,41.36,63.01,49.94,71.24,68.34,26.33,SELECTED (Optimal F1)
+VAL_EXP_03_PERSISTENCE_K_2,Persistence confirmation k=2 at tau=0.15,0.15,2,0.7,0.3,37.01,23.6,28.82,73.46,55.88,11.84,EVALUATED (Lower Recall)
+VAL_EXP_04_PERSISTENCE_K_3,Persistence confirmation k=3 at tau=0.15,0.15,3,0.7,0.3,32.08,10.37,15.67,74.6,51.95,6.47,EVALUATED (Lower Recall)
+VAL_EXP_05_PERSISTENCE_K_4,Persistence confirmation k=4 at tau=0.15,0.15,4,0.7,0.3,26.88,5.39,8.99,75.12,50.54,4.32,EVALUATED (Lower Recall)
+VAL_EXP_06_PERSISTENCE_K_5,Persistence confirmation k=5 at tau=0.15,0.15,5,0.7,0.3,24.97,3.78,6.56,75.51,50.22,3.35,EVALUATED (Lower Recall)
+VAL_EXP_WEIGHTS_5_5,"Ensemble weights w_norm=0.5, w_ewma=0.5 at tau=0.15",0.15,1,0.5,0.5,42.19,59.27,49.29,72.24,67.67,23.93,EVALUATED
+VAL_EXP_WEIGHTS_6_4,"Ensemble weights w_norm=0.6, w_ewma=0.4 at tau=0.15",0.15,1,0.6,0.4,42.07,61.13,49.84,71.99,68.16,24.81,EVALUATED
+VAL_EXP_WEIGHTS_8_2,"Ensemble weights w_norm=0.8, w_ewma=0.2 at tau=0.15",0.15,1,0.8,0.2,40.32,64.66,49.67,70.16,68.22,28.21,EVALUATED
+VAL_EXP_WEIGHTS_9_1,"Ensemble weights w_norm=0.9, w_ewma=0.1 at tau=0.15",0.15,1,0.9,0.1,38.72,65.84,48.76,68.5,67.56,30.71,EVALUATED

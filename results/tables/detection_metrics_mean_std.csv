@@ -1,0 +1,5 @@
+algorithm_id,algorithm_name,tp_mean,tn_mean,fp_mean,fn_mean,accuracy_mean,accuracy_std,balanced_accuracy_mean,balanced_accuracy_std,specificity_mean,specificity_std,fpr_mean,fpr_std,fnr_mean,fnr_std,precision_mean,precision_std,recall_mean,recall_std,f1_mean,f1_std,roc_auc_mean,roc_auc_std,pr_auc_mean,pr_auc_std
+proposed_causal_ft,Proposed Causal FT,3539.0,13361.0,5046.0,2054.0,70.42,0.0,67.93,0.0,72.59,0.0,27.41,0.0,36.72,0.0,41.22,0.0,63.28,0.0,49.92,0.0,0.7094,0.0,0.378,0.0
+paper1_ipft,"IPFT (Theodoropoulos et al., 2022)",5593.0,0.0,18407.0,0.0,23.3,0.0,50.0,0.0,0.0,0.0,100.0,0.0,0.0,0.0,23.3,0.0,100.0,0.0,37.8,0.0,0.5051,0.0903,0.2462,0.0497
+paper2_bwoaif,"BWOAIF (Hannák et al., 2023)",4449.0,5752.0,12655.0,1144.0,42.5,0.0,55.4,0.0,31.25,0.0,68.75,0.0,20.45,0.0,26.01,0.0,79.55,0.0,39.2,0.0,0.5872,0.0,0.2844,0.0
+paper4_pregan,"PreGAN (Tuli et al., 2022)",3728.7,6135.3,12271.7,1864.3,41.1,30.82,50.0,0.0,33.33,57.73,66.67,57.73,33.33,57.74,15.53,13.45,66.67,57.74,25.2,21.82,0.4685,0.0319,0.244,0.0169

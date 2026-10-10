@@ -34,6 +34,16 @@ class CausalFTResult:
     timestamp: float = 0.0
 
 
+import warnings
+
+KNOWN_CONFIG_KEYS = {
+    "detection_threshold",  # Canonical threshold key
+    "threshold",            # Backward-compatible alias
+    "upper_threshold",      # Harness alias
+    "window_size",          # State buffer window size
+}
+
+
 class CausalFaultTolerancePipeline(BaseFaultToleranceAlgorithm):
     # Main proposed framework algorithm implementing end-to-end causal fault tolerance.
 
@@ -68,10 +78,31 @@ class CausalFaultTolerancePipeline(BaseFaultToleranceAlgorithm):
 
     def initialize(self, config: Any = None) -> None:
         # Initialize models, hyperparameters, and internal structures.
+        # Canonical threshold key: 'detection_threshold'.
+        # Backward-compatible aliases: 'threshold', 'upper_threshold'.
         if config is not None and isinstance(config, dict):
+            for k in config.keys():
+                if k not in KNOWN_CONFIG_KEYS:
+                    warnings.warn(
+                        f"Unknown configuration key '{k}' provided to CausalFaultTolerancePipeline. "
+                        f"Supported keys: {sorted(list(KNOWN_CONFIG_KEYS))}",
+                        UserWarning,
+                        stacklevel=2,
+                    )
             self._config.update(config)
-            if "detection_threshold" in config:
-                self.detector.config.threshold = float(config["detection_threshold"])
+
+            # Resolve threshold using canonical key first, then aliases
+            thresh = config.get("detection_threshold")
+            if thresh is None:
+                thresh = config.get("threshold")
+            if thresh is None:
+                thresh = config.get("upper_threshold")
+
+            if thresh is not None:
+                self.detector.config.threshold = float(thresh)
+
+            if "window_size" in config:
+                self.state = CausalFTState(window_size=int(config["window_size"]))
         self.reset()
 
     def fit(self, training_data: Any = None) -> None:

@@ -1,0 +1,23 @@
+Metric,Formula,Unit,Timestamps_Counts,Applicable_Algorithms,Direction
+Detection Accuracy,(TP + TN) / (TP + TN + FP + FN),%,Confusion matrix counts,"Causal FT, IPFT, BWOAIF, PreGAN",Higher
+Balanced Accuracy,0.5 * (TP/(TP+FN) + TN/(TN+FP)),%,Class-normalized recall/specificity,"Causal FT, IPFT, BWOAIF, PreGAN",Higher
+Precision,TP / (TP + FP),%,True positives and false positives,"Causal FT, IPFT, BWOAIF, PreGAN",Higher
+Recall,TP / (TP + FN),%,True positives and false negatives,"Causal FT, IPFT, BWOAIF, PreGAN",Higher
+F1-Score,2 * P * R / (P + R),%,Harmonic mean of precision and recall,"Causal FT, IPFT, BWOAIF, PreGAN",Higher
+ROC-AUC,Area under TPR vs FPR curve,"Score [0, 1]",Continuous anomaly scores across all thresholds,"Causal FT, IPFT, BWOAIF, PreGAN",Higher
+PR-AUC,Average Precision under PR curve,"Score [0, 1]",Continuous anomaly scores across all thresholds,"Causal FT, IPFT, BWOAIF, PreGAN",Higher
+False Positive Rate (FPR),FP / (FP + TN),%,False positives and true negatives,"Causal FT, IPFT, BWOAIF, PreGAN",Lower
+Mean Time to Detect (MTTD),(1/|E|) * sum(t_first_detect - t_episode_onset),ms,Fault episode onset and first detection timestamp,"Causal FT, IPFT, BWOAIF, PreGAN",Lower
+Early Warning Lead Time,t_episode_onset - t_predictive_alarm,ms,Pre-onset predictive alarm timestamp,"IPFT, PreGAN (Predictive only)",Higher
+RCA Top-k Localization Recall,Hits in top-k causes / Total fault episodes,%,Ranked causal attribution list vs ground truth,"Causal FT, RCD (RCA only)",Higher
+RCA Computation Latency,t_diagnose_end - t_diagnose_start,ms,Direct CPU execution clock,"Causal FT, RCD (RCA only)",Lower
+Recovery Success Rate,Successful actions / Attempted actions,%,Count of successful restorations vs total actions,"Causal FT, IPFT, PreGAN",Higher
+Recovery Action Latency,t_restoration_confirmed - t_action_start,ms,Mitigation dispatch and completion timestamps,"Causal FT, IPFT, PreGAN",Lower
+End-to-End Recovery Time,t_restoration_confirmed - t_episode_onset,ms,Episode onset to verified restoration,"Causal FT, IPFT, PreGAN",Lower
+Observed Service Availability,(Total operational time - Unmitigated downtime) / Total operational time,%,Streaming observation timeline duration,"Causal FT, IPFT, PreGAN",Higher
+Processing Throughput,Total records / Elapsed wall-clock seconds,rec/s,Record count and execution timer,All 5 Approaches,Higher
+Mean Inference Latency,Mean single-record process() execution duration,ms/rec,High-precision timer per record,All 5 Approaches,Lower
+Peak Resident Memory (RSS),Peak process memory sampled via psutil,MB,psutil process memory info,All 5 Approaches,Lower
+Average CPU Utilization,Mean CPU percentage sampled via psutil,%,psutil CPU percentage samples,All 5 Approaches,Lower
+Estimated Energy Consumption,Integral of (P_idle + (P_peak - P_idle)*CPU%) * dt,Joules,CPU utilization and elapsed execution seconds,All 5 Approaches,Lower
+Normalized Operational Recovery Cost,0.4*(Actions/N) + 0.4*(SLO_viols/N) + 0.2*Overhead,"Score [0, 1]",Total actions and SLO latency breaches,"Causal FT, IPFT, PreGAN",Lower

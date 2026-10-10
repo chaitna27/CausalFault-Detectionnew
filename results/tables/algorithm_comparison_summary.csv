@@ -1,0 +1,24 @@
+Metric,Unit,Direction,Category,Causal FT,IPFT,BWOAIF,RCD,PreGAN
+Detection Accuracy,%,Higher,Detection,70.4,23.3,42.5,N/A,41.1 ± 30.8
+Balanced Accuracy,%,Higher,Detection,67.9,50.0,55.4,N/A,50.0
+Precision,%,Higher,Detection,41.2,23.3,26.0,N/A,15.5 ± 13.5
+Recall,%,Higher,Detection,63.3,100.0,79.5,N/A,66.7 ± 57.7
+F1-Score,%,Higher,Detection,49.9,37.8,39.2,N/A,25.2 ± 21.8
+ROC-AUC,score,Higher,Detection,0.7094,0.5051 ± 0.0903,0.5872,N/A,0.4685 ± 0.0319
+PR-AUC,score,Higher,Detection,0.3780,0.2462 ± 0.0497,0.2844,N/A,0.2440 ± 0.0169
+False Positive Rate (FPR),%,Lower,Detection,27.4,100.0,68.8,N/A,66.7 ± 57.7
+Mean Time to Detect (MTTD),ms,Lower,Timing,1.08 ± 0.01,1.68 ± 0.10,0.23 ± 0.01,N/A,1.00 ± 0.56
+Early Warning Lead Time,ms,Higher,Timing,N/A,1.00,N/A,N/A,1.67 ± 1.15
+RCA Top-1 Localization Recall,%,Higher,Diagnosis,100.0% (Syn) / 0.0% (Proxy),N/A,N/A,57.1% (Syn) / 8.0% (Proxy),N/A
+RCA Direct Computation Latency,ms,Lower,Diagnosis,0.8257 ± 0.0045,N/A,N/A,0.0000,N/A
+Recovery Success Rate,%,Higher,Recovery,UNAVAILABLE,UNAVAILABLE,UNAVAILABLE,UNAVAILABLE,UNAVAILABLE
+Recovery Action Latency,ms,Lower,Recovery,UNAVAILABLE,UNAVAILABLE,UNAVAILABLE,UNAVAILABLE,UNAVAILABLE
+End-to-End Recovery Time,ms,Lower,Recovery,UNAVAILABLE,UNAVAILABLE,UNAVAILABLE,UNAVAILABLE,UNAVAILABLE
+Observed Service Availability,%,Higher,Reliability,91.4,100.0,N/A,N/A,92.2 ± 13.5
+Processing Throughput,rec/s,Higher,Computation,501.0 ± 8.3,276.5 ± 11.4,491.9 ± 15.7,697.8 ± 25.9,464.1 ± 257.1
+Mean Inference Latency,ms/rec,Lower,Computation,0.4236 ± 0.0035,1.6779 ± 0.1035,0.1905 ± 0.0051,0.0050 ± 0.0002,1.2059 ± 0.5344
+P95 Inference Latency,ms/rec,Lower,Computation,1.4 ± 0.0,2.3 ± 0.0,0.3 ± 0.0,0.0 ± 0.0,1.8 ± 0.7
+Average CPU Utilization,%,Lower,Resource,98.9 ± 0.4,99.8 ± 0.3,99.0 ± 0.5,99.0 ± 0.2,100.6 ± 0.8
+Peak Process Memory (RSS),MB,Lower,Resource,343.2 ± 1.5,430.5 ± 8.3,419.9 ± 0.1,420.4 ± 0.0,420.6 ± 0.6
+Estimated Energy Consumption,Joules,Lower,Resource,304.6 ± 4.4,555.1 ± 23.4,310.5 ± 9.5,218.8 ± 8.0,392.5 ± 168.3
+Normalized Operational Recovery Cost,score,Lower,Recovery,0.0630,0.0267,N/A,N/A,0.0178 ± 0.0154
