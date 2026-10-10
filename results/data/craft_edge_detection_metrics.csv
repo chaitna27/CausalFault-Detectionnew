@@ -1,0 +1,2 @@
+algorithm,dataset_name,split,records_processed,true_positives,false_positives,false_negatives,true_negatives,accuracy,precision,recall,f1_score,false_positive_rate,avg_detection_latency_ms,total_recovery_episodes,successful_recoveries,recovery_success_rate,mean_recovery_reward,mean_estimated_benefit,mean_operational_cost,benefit_measurement_type,measurement_notice
+CRAFT-Edge,edge_iiotset,test,100,17,37,9,37,0.54,0.3148,0.6538,0.425,0.5,0.2693,51,45,88.24,0.297,0.3799,0.2922,SHADOW_SYNTHETIC_PROXY,Shadow-state synthetic proxy estimates; NOT physical hardware readings.

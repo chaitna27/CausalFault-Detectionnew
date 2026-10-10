@@ -3,1000 +3,181 @@
     "cpu_model": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
     "physical_cores": 12,
     "logical_cores": 16,
-    "base_frequency_mhz": 1466.0,
+    "base_frequency_mhz": 2200.0,
     "total_ram_gb": 15.69,
     "gpu_present": false
   },
   "seeds": [
-    42,
-    43,
-    44
+    42
   ],
-  "total_records_per_run": 25000,
-  "warmup_records": 1000,
+  "total_records_per_run": 1200,
+  "warmup_records": 200,
   "algorithms": {
-    "proposed_causal_ft": {
-      "name": "Proposed Causal FT",
-      "threshold": 0.15,
+    "proposed_craft_edge": {
+      "name": "CRAFT-Edge (Ours, Adaptive Efficacy)",
+      "threshold": 0.65,
       "aggregated": {
         "throughput_rec_sec": {
-          "mean": 1923.2267,
-          "std": 15.8202,
+          "mean": 1282.77,
+          "std": 0.0,
           "ci_95": [
-            1905.3244,
-            1941.1289
+            1282.77,
+            1282.77
           ]
         },
         "per_record_latency_ms": {
-          "mean": 0.041,
-          "std": 0.0005,
+          "mean": 0.0581,
+          "std": 0.0,
           "ci_95": [
-            0.0404,
-            0.0415
+            0.0581,
+            0.0581
           ]
         },
         "per_record_latency_p95_ms": {
-          "mean": 0.0658,
-          "std": 0.0005,
+          "mean": 0.1045,
+          "std": 0.0,
           "ci_95": [
-            0.0653,
-            0.0663
+            0.1045,
+            0.1045
           ]
         },
         "avg_cpu_percent": {
-          "mean": 99.39,
-          "std": 0.3601,
+          "mean": 95.88,
+          "std": 0.0,
           "ci_95": [
-            98.9825,
-            99.7975
+            95.88,
+            95.88
           ]
         },
         "peak_rss_mb": {
-          "mean": 332.7567,
-          "std": 1.139,
+          "mean": 312.72,
+          "std": 0.0,
           "ci_95": [
-            331.4678,
-            334.0455
+            312.72,
+            312.72
           ]
         },
         "bandwidth_kb_sec": {
-          "mean": 2162.5867,
-          "std": 17.7913,
+          "mean": 3248.36,
+          "std": 0.0,
           "ci_95": [
-            2142.4539,
-            2182.7194
+            3248.36,
+            3248.36
           ]
         },
         "estimated_energy_joules": {
-          "mean": 79.5499,
-          "std": 0.7396,
+          "mean": 4.5831,
+          "std": 0.0,
           "ci_95": [
-            78.713,
-            80.3869
+            4.5831,
+            4.5831
           ]
         },
         "operational_recovery_cost": {
-          "mean": 0.0032,
+          "mean": 0.0346,
           "std": 0.0,
           "ci_95": [
-            0.0032,
-            0.0032
+            0.0346,
+            0.0346
           ]
         },
         "precision": {
-          "mean": 26.23,
+          "mean": 26.92,
           "std": 0.0,
           "ci_95": [
-            26.23,
-            26.23
+            26.92,
+            26.92
           ]
         },
         "recall": {
-          "mean": 2.66,
+          "mean": 2.61,
           "std": 0.0,
           "ci_95": [
-            2.66,
-            2.66
+            2.61,
+            2.61
           ]
         },
         "f1": {
-          "mean": 4.84,
+          "mean": 4.76,
           "std": 0.0,
           "ci_95": [
-            4.84,
-            4.84
+            4.76,
+            4.76
           ]
         },
         "roc_auc": {
-          "mean": 0.7094,
+          "mean": 0.6936,
           "std": 0.0,
           "ci_95": [
-            0.7094,
-            0.7094
+            0.6936,
+            0.6936
           ]
         },
         "pr_auc": {
-          "mean": 0.378,
+          "mean": 0.4139,
           "std": 0.0,
           "ci_95": [
-            0.378,
-            0.378
+            0.4139,
+            0.4139
           ]
         },
-        "mttd_ms": 13660.153,
-        "diagnosis_latency_ms": 10807.812,
-        "recovery_latency_ms": "NOT_APPLICABLE",
-        "end_to_end_latency_ms": 12111.101,
+        "mttd_ms": 22531.491,
+        "diagnosis_latency_ms": 15707.797,
+        "recovery_latency_ms": 5244.947,
+        "end_to_end_latency_ms": 17272.802,
         "availability_percent": 0.0,
         "mttf_seconds": 0.0,
-        "mttr_seconds": 25.49,
-        "migration_bandwidth_kb_sec": "NOT_APPLICABLE"
+        "mttr_seconds": 27.78,
+        "migration_bandwidth_kb_sec": 2791.71,
+        "recovery_summary": {
+          "total_recovery_episodes": 24,
+          "successful_recoveries": 21,
+          "recovery_success_rate": 0.875,
+          "mean_reward": 0.2617,
+          "mean_estimated_benefit": 0.357,
+          "mean_operational_cost": 0.3563,
+          "benefit_measurement_type": "SHADOW_SYNTHETIC_PROXY",
+          "measurement_notice": "Shadow-state proxy estimates; NOT physical hardware readings."
+        }
       },
       "trials": [
         {
           "seed": 42,
-          "eval_records": 24000,
-          "elapsed_seconds": 12.4539,
-          "throughput_rec_sec": 1925.61,
-          "per_record_latency_ms": 0.0415,
-          "per_record_latency_p95_ms": 0.0663,
-          "avg_cpu_percent": 99.78,
-          "peak_rss_mb": 332.16,
-          "bandwidth_kb_sec": 2165.26,
-          "migration_bandwidth_kb_sec": "NOT_APPLICABLE",
-          "estimated_energy_joules": 79.6022,
-          "operational_recovery_cost": 0.0032,
-          "precision": 26.23,
-          "recall": 2.66,
-          "f1": 4.84,
-          "roc_auc": 0.7094,
-          "pr_auc": 0.378,
-          "mttd_ms": 13660.153,
-          "diagnosis_latency_ms": 10807.812,
-          "recovery_latency_ms": "NOT_APPLICABLE",
-          "end_to_end_latency_ms": 12111.101,
+          "eval_records": 1000,
+          "elapsed_seconds": 0.7336,
+          "throughput_rec_sec": 1282.77,
+          "per_record_latency_ms": 0.0581,
+          "per_record_latency_p95_ms": 0.1045,
+          "avg_cpu_percent": 95.88,
+          "peak_rss_mb": 312.72,
+          "bandwidth_kb_sec": 3248.36,
+          "migration_bandwidth_kb_sec": 2791.71,
+          "estimated_energy_joules": 4.5831,
+          "operational_recovery_cost": 0.0346,
+          "precision": 26.92,
+          "recall": 2.61,
+          "f1": 4.76,
+          "roc_auc": 0.6936,
+          "pr_auc": 0.4139,
+          "mttd_ms": 22531.491,
+          "diagnosis_latency_ms": 15707.797,
+          "recovery_latency_ms": 5244.947,
+          "end_to_end_latency_ms": 17272.802,
           "availability_percent": 0.0,
           "mttf_seconds": 0.0,
-          "mttr_seconds": 25.49,
-          "total_actions": 194,
-          "slo_violation_rate": 0.0
-        },
-        {
-          "seed": 43,
-          "eval_records": 24000,
-          "elapsed_seconds": 12.5903,
-          "throughput_rec_sec": 1906.35,
-          "per_record_latency_ms": 0.0408,
-          "per_record_latency_p95_ms": 0.0658,
-          "avg_cpu_percent": 99.32,
-          "peak_rss_mb": 332.04,
-          "bandwidth_kb_sec": 2143.61,
-          "migration_bandwidth_kb_sec": "NOT_APPLICABLE",
-          "estimated_energy_joules": 80.262,
-          "operational_recovery_cost": 0.0032,
-          "precision": 26.23,
-          "recall": 2.66,
-          "f1": 4.84,
-          "roc_auc": 0.7094,
-          "pr_auc": 0.378,
-          "mttd_ms": 13660.153,
-          "diagnosis_latency_ms": 10807.812,
-          "recovery_latency_ms": "NOT_APPLICABLE",
-          "end_to_end_latency_ms": 12111.101,
-          "availability_percent": 0.0,
-          "mttf_seconds": 0.0,
-          "mttr_seconds": 25.49,
-          "total_actions": 194,
-          "slo_violation_rate": 0.0
-        },
-        {
-          "seed": 44,
-          "eval_records": 24000,
-          "elapsed_seconds": 12.3769,
-          "throughput_rec_sec": 1937.72,
-          "per_record_latency_ms": 0.0406,
-          "per_record_latency_p95_ms": 0.0654,
-          "avg_cpu_percent": 99.07,
-          "peak_rss_mb": 334.07,
-          "bandwidth_kb_sec": 2178.89,
-          "migration_bandwidth_kb_sec": "NOT_APPLICABLE",
-          "estimated_energy_joules": 78.7856,
-          "operational_recovery_cost": 0.0032,
-          "precision": 26.23,
-          "recall": 2.66,
-          "f1": 4.84,
-          "roc_auc": 0.7094,
-          "pr_auc": 0.378,
-          "mttd_ms": 13660.153,
-          "diagnosis_latency_ms": 10807.812,
-          "recovery_latency_ms": "NOT_APPLICABLE",
-          "end_to_end_latency_ms": 12111.101,
-          "availability_percent": 0.0,
-          "mttf_seconds": 0.0,
-          "mttr_seconds": 25.49,
-          "total_actions": 194,
-          "slo_violation_rate": 0.0
-        }
-      ]
-    },
-    "paper1_ipft": {
-      "name": "IPFT (Theodoropoulos et al., 2022)",
-      "threshold": 0.01,
-      "aggregated": {
-        "throughput_rec_sec": {
-          "mean": 625.8433,
-          "std": 318.9791,
-          "ci_95": [
-            264.8846,
-            986.8021
-          ]
-        },
-        "per_record_latency_ms": {
-          "mean": 0.8912,
-          "std": 0.4531,
-          "ci_95": [
-            0.3785,
-            1.4039
-          ]
-        },
-        "per_record_latency_p95_ms": {
-          "mean": 1.7348,
-          "std": 0.9018,
-          "ci_95": [
-            0.7143,
-            2.7553
-          ]
-        },
-        "avg_cpu_percent": {
-          "mean": 98.0967,
-          "std": 1.9604,
-          "ci_95": [
-            95.8782,
-            100.3151
-          ]
-        },
-        "peak_rss_mb": {
-          "mean": 415.5933,
-          "std": 8.6763,
-          "ci_95": [
-            405.7752,
-            425.4115
-          ]
-        },
-        "bandwidth_kb_sec": {
-          "mean": 64389.2633,
-          "std": 32817.9692,
-          "ci_95": [
-            27252.2351,
-            101526.2915
-          ]
-        },
-        "estimated_energy_joules": {
-          "mean": 284.6877,
-          "std": 129.0164,
-          "ci_95": [
-            138.6919,
-            430.6835
-          ]
-        },
-        "operational_recovery_cost": {
-          "mean": 0.0267,
-          "std": 0.0,
-          "ci_95": [
-            0.0267,
-            0.0267
-          ]
-        },
-        "precision": {
-          "mean": 23.3,
-          "std": 0.0,
-          "ci_95": [
-            23.3,
-            23.3
-          ]
-        },
-        "recall": {
-          "mean": 100.0,
-          "std": 0.0,
-          "ci_95": [
-            100.0,
-            100.0
-          ]
-        },
-        "f1": {
-          "mean": 37.8,
-          "std": 0.0,
-          "ci_95": [
-            37.8,
-            37.8
-          ]
-        },
-        "roc_auc": {
-          "mean": 0.5051,
-          "std": 0.0903,
-          "ci_95": [
-            0.4029,
-            0.6073
-          ]
-        },
-        "pr_auc": {
-          "mean": 0.2462,
-          "std": 0.0497,
-          "ci_95": [
-            0.19,
-            0.3025
-          ]
-        },
-        "mttd_ms": 0.0,
-        "diagnosis_latency_ms": "NOT_APPLICABLE",
-        "recovery_latency_ms": 0.0,
-        "end_to_end_latency_ms": 13110.967,
-        "availability_percent": 100.0,
-        "mttf_seconds": 0.0,
-        "mttr_seconds": 0.0,
-        "migration_bandwidth_kb_sec": 100647.48
-      },
-      "trials": [
-        {
-          "seed": 42,
-          "eval_records": 24000,
-          "elapsed_seconds": 24.4179,
-          "throughput_rec_sec": 981.13,
-          "per_record_latency_ms": 0.4586,
-          "per_record_latency_p95_ms": 0.6953,
-          "avg_cpu_percent": 100.36,
-          "peak_rss_mb": 408.81,
-          "bandwidth_kb_sec": 100942.78,
-          "migration_bandwidth_kb_sec": 100647.48,
-          "estimated_energy_joules": 156.2745,
-          "operational_recovery_cost": 0.0267,
-          "precision": 23.3,
-          "recall": 100.0,
-          "f1": 37.8,
-          "roc_auc": 0.6073,
-          "pr_auc": 0.2937,
-          "mttd_ms": 0.0,
-          "diagnosis_latency_ms": "NOT_APPLICABLE",
-          "recovery_latency_ms": 0.0,
-          "end_to_end_latency_ms": 13110.967,
-          "availability_percent": 100.0,
-          "mttf_seconds": 0.0,
-          "mttr_seconds": 0.0,
-          "total_actions": 1600,
-          "slo_violation_rate": 0.0
-        },
-        {
-          "seed": 43,
-          "eval_records": 24000,
-          "elapsed_seconds": 65.9045,
-          "throughput_rec_sec": 364.08,
-          "per_record_latency_ms": 1.3623,
-          "per_record_latency_p95_ms": 2.3081,
-          "avg_cpu_percent": 96.93,
-          "peak_rss_mb": 412.6,
-          "bandwidth_kb_sec": 37458.06,
-          "migration_bandwidth_kb_sec": 37290.32,
-          "estimated_energy_joules": 414.2989,
-          "operational_recovery_cost": 0.0267,
-          "precision": 23.3,
-          "recall": 100.0,
-          "f1": 37.8,
-          "roc_auc": 0.4722,
-          "pr_auc": 0.2504,
-          "mttd_ms": 0.001,
-          "diagnosis_latency_ms": "NOT_APPLICABLE",
-          "recovery_latency_ms": 0.0,
-          "end_to_end_latency_ms": 13110.968,
-          "availability_percent": 100.0,
-          "mttf_seconds": 0.01,
-          "mttr_seconds": 0.0,
-          "total_actions": 1600,
-          "slo_violation_rate": 0.0
-        },
-        {
-          "seed": 44,
-          "eval_records": 24000,
-          "elapsed_seconds": 45.0779,
-          "throughput_rec_sec": 532.32,
-          "per_record_latency_ms": 0.8526,
-          "per_record_latency_p95_ms": 2.201,
-          "avg_cpu_percent": 97.0,
-          "peak_rss_mb": 425.37,
-          "bandwidth_kb_sec": 54766.95,
-          "migration_bandwidth_kb_sec": 54518.95,
-          "estimated_energy_joules": 283.4897,
-          "operational_recovery_cost": 0.0267,
-          "precision": 23.3,
-          "recall": 100.0,
-          "f1": 37.8,
-          "roc_auc": 0.4359,
-          "pr_auc": 0.1946,
-          "mttd_ms": 0.001,
-          "diagnosis_latency_ms": "NOT_APPLICABLE",
-          "recovery_latency_ms": 0.0,
-          "end_to_end_latency_ms": 13110.968,
-          "availability_percent": 100.0,
-          "mttf_seconds": 0.01,
-          "mttr_seconds": 0.0,
-          "total_actions": 1600,
-          "slo_violation_rate": 0.0
-        }
-      ]
-    },
-    "paper2_bwoaif": {
-      "name": "BWOAIF (Hann\u00e1k et al., 2023)",
-      "threshold": 0.49,
-      "aggregated": {
-        "throughput_rec_sec": {
-          "mean": 1774.1067,
-          "std": 27.338,
-          "ci_95": [
-            1743.1708,
-            1805.0426
-          ]
-        },
-        "per_record_latency_ms": {
-          "mean": 0.0539,
-          "std": 0.0008,
-          "ci_95": [
-            0.053,
-            0.0548
-          ]
-        },
-        "per_record_latency_p95_ms": {
-          "mean": 0.0865,
-          "std": 0.001,
-          "ci_95": [
-            0.0854,
-            0.0876
-          ]
-        },
-        "avg_cpu_percent": {
-          "mean": 99.4233,
-          "std": 0.379,
-          "ci_95": [
-            98.9945,
-            99.8522
-          ]
-        },
-        "peak_rss_mb": {
-          "mean": 409.51,
-          "std": 1.5962,
-          "ci_95": [
-            407.7038,
-            411.3162
-          ]
-        },
-        "bandwidth_kb_sec": {
-          "mean": 859.3333,
-          "std": 13.2412,
-          "ci_95": [
-            844.3495,
-            874.3172
-          ]
-        },
-        "estimated_energy_joules": {
-          "mean": 86.0858,
-          "std": 1.5125,
-          "ci_95": [
-            84.3743,
-            87.7973
-          ]
-        },
-        "operational_recovery_cost": {
-          "mean": 0.0,
-          "std": 0.0,
-          "ci_95": [
-            0.0,
-            0.0
-          ]
-        },
-        "precision": {
-          "mean": 26.01,
-          "std": 0.0,
-          "ci_95": [
-            26.01,
-            26.01
-          ]
-        },
-        "recall": {
-          "mean": 79.55,
-          "std": 0.0,
-          "ci_95": [
-            79.55,
-            79.55
-          ]
-        },
-        "f1": {
-          "mean": 39.2,
-          "std": 0.0,
-          "ci_95": [
-            39.2,
-            39.2
-          ]
-        },
-        "roc_auc": {
-          "mean": 0.5872,
-          "std": 0.0,
-          "ci_95": [
-            0.5872,
-            0.5872
-          ]
-        },
-        "pr_auc": {
-          "mean": 0.2844,
-          "std": 0.0,
-          "ci_95": [
-            0.2844,
-            0.2844
-          ]
-        },
-        "mttd_ms": 14292.628,
-        "diagnosis_latency_ms": "NOT_APPLICABLE",
-        "recovery_latency_ms": "NOT_APPLICABLE",
-        "end_to_end_latency_ms": "NOT_APPLICABLE",
-        "availability_percent": "NOT_APPLICABLE",
-        "mttf_seconds": "NOT_APPLICABLE",
-        "mttr_seconds": "NOT_APPLICABLE",
-        "migration_bandwidth_kb_sec": "NOT_APPLICABLE"
-      },
-      "trials": [
-        {
-          "seed": 42,
-          "eval_records": 24000,
-          "elapsed_seconds": 13.6917,
-          "throughput_rec_sec": 1751.55,
-          "per_record_latency_ms": 0.0545,
-          "per_record_latency_p95_ms": 0.087,
-          "avg_cpu_percent": 99.83,
-          "peak_rss_mb": 410.84,
-          "bandwidth_kb_sec": 848.41,
-          "migration_bandwidth_kb_sec": "NOT_APPLICABLE",
-          "estimated_energy_joules": 87.5406,
-          "operational_recovery_cost": 0.0,
-          "precision": 26.01,
-          "recall": 79.55,
-          "f1": 39.2,
-          "roc_auc": 0.5872,
-          "pr_auc": 0.2844,
-          "mttd_ms": 14292.628,
-          "diagnosis_latency_ms": "NOT_APPLICABLE",
-          "recovery_latency_ms": "NOT_APPLICABLE",
-          "end_to_end_latency_ms": "NOT_APPLICABLE",
-          "availability_percent": "NOT_APPLICABLE",
-          "mttf_seconds": "NOT_APPLICABLE",
-          "mttr_seconds": "NOT_APPLICABLE",
-          "total_actions": 0,
-          "slo_violation_rate": 0.0
-        },
-        {
-          "seed": 43,
-          "eval_records": 24000,
-          "elapsed_seconds": 13.2555,
-          "throughput_rec_sec": 1804.51,
-          "per_record_latency_ms": 0.053,
-          "per_record_latency_p95_ms": 0.0871,
-          "avg_cpu_percent": 99.36,
-          "peak_rss_mb": 407.74,
-          "bandwidth_kb_sec": 874.06,
-          "migration_bandwidth_kb_sec": "NOT_APPLICABLE",
-          "estimated_energy_joules": 84.5216,
-          "operational_recovery_cost": 0.0,
-          "precision": 26.01,
-          "recall": 79.55,
-          "f1": 39.2,
-          "roc_auc": 0.5872,
-          "pr_auc": 0.2844,
-          "mttd_ms": 14292.628,
-          "diagnosis_latency_ms": "NOT_APPLICABLE",
-          "recovery_latency_ms": "NOT_APPLICABLE",
-          "end_to_end_latency_ms": "NOT_APPLICABLE",
-          "availability_percent": "NOT_APPLICABLE",
-          "mttf_seconds": "NOT_APPLICABLE",
-          "mttr_seconds": "NOT_APPLICABLE",
-          "total_actions": 0,
-          "slo_violation_rate": 0.0
-        },
-        {
-          "seed": 44,
-          "eval_records": 24000,
-          "elapsed_seconds": 13.5403,
-          "throughput_rec_sec": 1766.26,
-          "per_record_latency_ms": 0.0542,
-          "per_record_latency_p95_ms": 0.0854,
-          "avg_cpu_percent": 99.08,
-          "peak_rss_mb": 409.95,
-          "bandwidth_kb_sec": 855.53,
-          "migration_bandwidth_kb_sec": "NOT_APPLICABLE",
-          "estimated_energy_joules": 86.1952,
-          "operational_recovery_cost": 0.0,
-          "precision": 26.01,
-          "recall": 79.55,
-          "f1": 39.2,
-          "roc_auc": 0.5872,
-          "pr_auc": 0.2844,
-          "mttd_ms": 14292.628,
-          "diagnosis_latency_ms": "NOT_APPLICABLE",
-          "recovery_latency_ms": "NOT_APPLICABLE",
-          "end_to_end_latency_ms": "NOT_APPLICABLE",
-          "availability_percent": "NOT_APPLICABLE",
-          "mttf_seconds": "NOT_APPLICABLE",
-          "mttr_seconds": "NOT_APPLICABLE",
-          "total_actions": 0,
-          "slo_violation_rate": 0.0
-        }
-      ]
-    },
-    "paper3_rcd": {
-      "name": "RCD (Ikram et al., 2022)",
-      "threshold": 0.05,
-      "aggregated": {
-        "throughput_rec_sec": {
-          "mean": 1996.66,
-          "std": 131.0905,
-          "ci_95": [
-            1848.3172,
-            2145.0028
-          ]
-        },
-        "per_record_latency_ms": {
-          "mean": 0.0019,
-          "std": 0.0001,
-          "ci_95": [
-            0.0018,
-            0.0019
-          ]
-        },
-        "per_record_latency_p95_ms": {
-          "mean": 0.0027,
-          "std": 0.0002,
-          "ci_95": [
-            0.0025,
-            0.0028
-          ]
-        },
-        "avg_cpu_percent": {
-          "mean": 98.6933,
-          "std": 0.4822,
-          "ci_95": [
-            98.1477,
-            99.239
-          ]
-        },
-        "peak_rss_mb": {
-          "mean": 411.1333,
-          "std": 0.6012,
-          "ci_95": [
-            410.453,
-            411.8136
-          ]
-        },
-        "bandwidth_kb_sec": {
-          "mean": 967.13,
-          "std": 63.499,
-          "ci_95": [
-            895.2742,
-            1038.9858
-          ]
-        },
-        "estimated_energy_joules": {
-          "mean": 76.3997,
-          "std": 5.0421,
-          "ci_95": [
-            70.694,
-            82.1054
-          ]
-        },
-        "operational_recovery_cost": {
-          "mean": 0.0,
-          "std": 0.0,
-          "ci_95": [
-            0.0,
-            0.0
-          ]
-        },
-        "precision": "NOT_APPLICABLE",
-        "recall": "NOT_APPLICABLE",
-        "f1": "NOT_APPLICABLE",
-        "roc_auc": "NOT_APPLICABLE",
-        "pr_auc": "NOT_APPLICABLE",
-        "mttd_ms": "NOT_APPLICABLE",
-        "diagnosis_latency_ms": "NOT_APPLICABLE",
-        "recovery_latency_ms": "NOT_APPLICABLE",
-        "end_to_end_latency_ms": "NOT_APPLICABLE",
-        "availability_percent": "NOT_APPLICABLE",
-        "mttf_seconds": "NOT_APPLICABLE",
-        "mttr_seconds": "NOT_APPLICABLE",
-        "migration_bandwidth_kb_sec": "NOT_APPLICABLE"
-      },
-      "trials": [
-        {
-          "seed": 42,
-          "eval_records": 24000,
-          "elapsed_seconds": 11.1437,
-          "throughput_rec_sec": 2147.84,
-          "per_record_latency_ms": 0.0018,
-          "per_record_latency_p95_ms": 0.0025,
-          "avg_cpu_percent": 98.24,
-          "peak_rss_mb": 411.51,
-          "bandwidth_kb_sec": 1040.36,
-          "migration_bandwidth_kb_sec": "NOT_APPLICABLE",
-          "estimated_energy_joules": 70.5932,
-          "operational_recovery_cost": 0.0,
-          "precision": "NOT_APPLICABLE",
-          "recall": "NOT_APPLICABLE",
-          "f1": "NOT_APPLICABLE",
-          "roc_auc": "NOT_APPLICABLE",
-          "pr_auc": "NOT_APPLICABLE",
-          "mttd_ms": "NOT_APPLICABLE",
-          "diagnosis_latency_ms": "NOT_APPLICABLE",
-          "recovery_latency_ms": "NOT_APPLICABLE",
-          "end_to_end_latency_ms": "NOT_APPLICABLE",
-          "availability_percent": "NOT_APPLICABLE",
-          "mttf_seconds": "NOT_APPLICABLE",
-          "mttr_seconds": "NOT_APPLICABLE",
-          "total_actions": 0,
-          "slo_violation_rate": 0.0
-        },
-        {
-          "seed": 43,
-          "eval_records": 24000,
-          "elapsed_seconds": 12.4312,
-          "throughput_rec_sec": 1927.64,
-          "per_record_latency_ms": 0.0019,
-          "per_record_latency_p95_ms": 0.0028,
-          "avg_cpu_percent": 98.64,
-          "peak_rss_mb": 410.44,
-          "bandwidth_kb_sec": 933.7,
-          "migration_bandwidth_kb_sec": "NOT_APPLICABLE",
-          "estimated_energy_joules": 78.9338,
-          "operational_recovery_cost": 0.0,
-          "precision": "NOT_APPLICABLE",
-          "recall": "NOT_APPLICABLE",
-          "f1": "NOT_APPLICABLE",
-          "roc_auc": "NOT_APPLICABLE",
-          "pr_auc": "NOT_APPLICABLE",
-          "mttd_ms": "NOT_APPLICABLE",
-          "diagnosis_latency_ms": "NOT_APPLICABLE",
-          "recovery_latency_ms": "NOT_APPLICABLE",
-          "end_to_end_latency_ms": "NOT_APPLICABLE",
-          "availability_percent": "NOT_APPLICABLE",
-          "mttf_seconds": "NOT_APPLICABLE",
-          "mttr_seconds": "NOT_APPLICABLE",
-          "total_actions": 0,
-          "slo_violation_rate": 0.0
-        },
-        {
-          "seed": 44,
-          "eval_records": 24000,
-          "elapsed_seconds": 12.5069,
-          "throughput_rec_sec": 1914.5,
-          "per_record_latency_ms": 0.0019,
-          "per_record_latency_p95_ms": 0.0027,
-          "avg_cpu_percent": 99.2,
-          "peak_rss_mb": 411.45,
-          "bandwidth_kb_sec": 927.33,
-          "migration_bandwidth_kb_sec": "NOT_APPLICABLE",
-          "estimated_energy_joules": 79.6721,
-          "operational_recovery_cost": 0.0,
-          "precision": "NOT_APPLICABLE",
-          "recall": "NOT_APPLICABLE",
-          "f1": "NOT_APPLICABLE",
-          "roc_auc": "NOT_APPLICABLE",
-          "pr_auc": "NOT_APPLICABLE",
-          "mttd_ms": "NOT_APPLICABLE",
-          "diagnosis_latency_ms": "NOT_APPLICABLE",
-          "recovery_latency_ms": "NOT_APPLICABLE",
-          "end_to_end_latency_ms": "NOT_APPLICABLE",
-          "availability_percent": "NOT_APPLICABLE",
-          "mttf_seconds": "NOT_APPLICABLE",
-          "mttr_seconds": "NOT_APPLICABLE",
-          "total_actions": 0,
-          "slo_violation_rate": 0.0
-        }
-      ]
-    },
-    "paper4_pregan": {
-      "name": "PreGAN (Tuli et al., 2022)",
-      "threshold": 0.01,
-      "aggregated": {
-        "throughput_rec_sec": {
-          "mean": 331.17,
-          "std": 140.14,
-          "ci_95": [
-            172.5866,
-            489.7534
-          ]
-        },
-        "per_record_latency_ms": {
-          "mean": 1.6467,
-          "std": 0.5774,
-          "ci_95": [
-            0.9933,
-            2.3002
-          ]
-        },
-        "per_record_latency_p95_ms": {
-          "mean": 2.9852,
-          "std": 0.6893,
-          "ci_95": [
-            2.2052,
-            3.7653
-          ]
-        },
-        "avg_cpu_percent": {
-          "mean": 97.1833,
-          "std": 0.1361,
-          "ci_95": [
-            97.0293,
-            97.3374
-          ]
-        },
-        "peak_rss_mb": {
-          "mean": 412.0467,
-          "std": 0.0208,
-          "ci_95": [
-            412.0231,
-            412.0702
-          ]
-        },
-        "bandwidth_kb_sec": {
-          "mean": 67449.21,
-          "std": 67336.2491,
-          "ci_95": [
-            -8748.929,
-            143647.349
-          ]
-        },
-        "estimated_energy_joules": {
-          "mean": 504.4475,
-          "std": 171.7521,
-          "ci_95": [
-            310.0917,
-            698.8033
-          ]
-        },
-        "operational_recovery_cost": {
-          "mean": 0.0178,
-          "std": 0.0154,
-          "ci_95": [
-            0.0004,
-            0.0352
-          ]
-        },
-        "precision": {
-          "mean": 15.5333,
-          "std": 13.4523,
-          "ci_95": [
-            0.3107,
-            30.756
-          ]
-        },
-        "recall": {
-          "mean": 66.6667,
-          "std": 57.735,
-          "ci_95": [
-            1.3333,
-            132.0
-          ]
-        },
-        "f1": {
-          "mean": 25.2,
-          "std": 21.8238,
-          "ci_95": [
-            0.504,
-            49.896
-          ]
-        },
-        "roc_auc": {
-          "mean": 0.4685,
-          "std": 0.0319,
-          "ci_95": [
-            0.4323,
-            0.5046
-          ]
-        },
-        "pr_auc": {
-          "mean": 0.244,
-          "std": 0.0169,
-          "ci_95": [
-            0.2249,
-            0.263
-          ]
-        },
-        "mttd_ms": 0.001,
-        "diagnosis_latency_ms": "NOT_APPLICABLE",
-        "recovery_latency_ms": 0.0,
-        "end_to_end_latency_ms": 13110.968,
-        "availability_percent": 100.0,
-        "mttf_seconds": 0.01,
-        "mttr_seconds": 0.0,
-        "migration_bandwidth_kb_sec": 134735.73
-      },
-      "trials": [
-        {
-          "seed": 42,
-          "eval_records": 24000,
-          "elapsed_seconds": 48.6404,
-          "throughput_rec_sec": 492.92,
-          "per_record_latency_ms": 0.9808,
-          "per_record_latency_p95_ms": 2.2826,
-          "avg_cpu_percent": 97.29,
-          "peak_rss_mb": 412.03,
-          "bandwidth_kb_sec": 134839.02,
-          "migration_bandwidth_kb_sec": 134735.73,
-          "estimated_energy_joules": 306.4299,
-          "operational_recovery_cost": 0.0267,
-          "precision": 23.3,
-          "recall": 100.0,
-          "f1": 37.8,
-          "roc_auc": 0.4835,
-          "pr_auc": 0.2535,
-          "mttd_ms": 0.001,
-          "diagnosis_latency_ms": "NOT_APPLICABLE",
-          "recovery_latency_ms": 0.0,
-          "end_to_end_latency_ms": 13110.968,
-          "availability_percent": 100.0,
-          "mttf_seconds": 0.01,
-          "mttr_seconds": 0.0,
-          "total_actions": 1600,
-          "slo_violation_rate": 0.0
-        },
-        {
-          "seed": 43,
-          "eval_records": 24000,
-          "elapsed_seconds": 94.3138,
-          "throughput_rec_sec": 254.41,
-          "per_record_latency_ms": 1.9507,
-          "per_record_latency_p95_ms": 3.6604,
-          "avg_cpu_percent": 97.23,
-          "peak_rss_mb": 412.07,
-          "bandwidth_kb_sec": 166.65,
-          "migration_bandwidth_kb_sec": 43.43,
-          "estimated_energy_joules": 593.9402,
-          "operational_recovery_cost": 0.0,
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "roc_auc": 0.4901,
-          "pr_auc": 0.2539,
-          "mttd_ms": "NOT_APPLICABLE",
-          "diagnosis_latency_ms": "NOT_APPLICABLE",
-          "recovery_latency_ms": 0.0,
-          "end_to_end_latency_ms": 0.0,
-          "availability_percent": 100.0,
-          "mttf_seconds": 0.02,
-          "mttr_seconds": 0.0,
-          "total_actions": 1,
-          "slo_violation_rate": 0.0
-        },
-        {
-          "seed": 44,
-          "eval_records": 24000,
-          "elapsed_seconds": 97.4503,
-          "throughput_rec_sec": 246.18,
-          "per_record_latency_ms": 2.0087,
-          "per_record_latency_p95_ms": 3.0127,
-          "avg_cpu_percent": 97.03,
-          "peak_rss_mb": 412.04,
-          "bandwidth_kb_sec": 67341.96,
-          "migration_bandwidth_kb_sec": 67250.69,
-          "estimated_energy_joules": 612.9724,
-          "operational_recovery_cost": 0.0267,
-          "precision": 23.3,
-          "recall": 100.0,
-          "f1": 37.8,
-          "roc_auc": 0.4318,
-          "pr_auc": 0.2245,
-          "mttd_ms": 0.002,
-          "diagnosis_latency_ms": "NOT_APPLICABLE",
-          "recovery_latency_ms": 0.0,
-          "end_to_end_latency_ms": 13110.969,
-          "availability_percent": 100.0,
-          "mttf_seconds": 0.02,
-          "mttr_seconds": 0.0,
-          "total_actions": 1600,
-          "slo_violation_rate": 0.0
+          "mttr_seconds": 27.78,
+          "total_actions": 24,
+          "slo_violation_rate": 0.0,
+          "recovery_summary": {
+            "total_recovery_episodes": 24,
+            "successful_recoveries": 21,
+            "recovery_success_rate": 0.875,
+            "mean_reward": 0.2617,
+            "mean_estimated_benefit": 0.357,
+            "mean_operational_cost": 0.3563,
+            "benefit_measurement_type": "SHADOW_SYNTHETIC_PROXY",
+            "measurement_notice": "Shadow-state proxy estimates; NOT physical hardware readings."
+          }
         }
       ]
     }

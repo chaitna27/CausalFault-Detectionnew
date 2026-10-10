@@ -1,0 +1,2 @@
+record_index,timestamp,device_type,treatment,outcome,estimated_effect,root_cause,causal_status,root_cause_source
+0,0.0,TON_IoT,none,none,0.0,INSUFFICIENT_VARIANCE,INSUFFICIENT_EVIDENCE,INSUFFICIENT_EVIDENCE

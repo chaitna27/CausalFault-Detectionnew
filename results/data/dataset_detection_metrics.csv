@@ -1,0 +1,2 @@
+dataset_name,data_source,data_path,experiment_mode,records_processed,source_files,total_anomalies_detected_raw,total_faults_confirmed,true_positives,false_positives,false_negatives,true_negatives,accuracy,precision,recall,f1_score,false_positive_rate,avg_detection_latency_ms,causal_inferences_count,heuristic_fallbacks_count,insufficient_evidence_count,physical_recovery_status
+Edge-IIoTset,Processed_IoT_dataset,data/processed/test,dataset,100,test,0,0,0,0,26,74,0.74,0.0,0.0,0.0,0.0,0.2796,0,0,0,DISABLED_STATIC_LOGS
