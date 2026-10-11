@@ -12,13 +12,14 @@ import simpy
 from .devices import IoTDevice, DeviceType
 from .edge_nodes import EdgeNode
 from .workload import WorkloadGenerator
+from .tasks import Task
 from data.telemetry import TelemetryRecord
 
 logger = logging.getLogger(__name__)
 
 
 class EdgeSimulation:
-    # SimPy-driven Edge-IoT System Simulation.
+    # SimPy-driven Edge-IoT System Simulation with discrete task queue processing.
 
     def __init__(
         self,
@@ -26,17 +27,25 @@ class EdgeSimulation:
         num_devices_per_node: int = 4,
         step_size: float = 1.0,
         seed: int = 42,
+        poisson_arrivals: bool = True,
     ):
         self.seed = seed
         random.seed(seed)
+        self.rng = random.Random(seed)
         self.env = simpy.Environment()
         self.step_size = step_size
+        self.poisson_arrivals = poisson_arrivals
+        self._task_counter: int = 0
 
-        # Create Edge Nodes
+        # Create Edge Nodes attached to SimPy Environment
         self.nodes: Dict[str, EdgeNode] = {}
         for i in range(1, num_nodes + 1):
             node_id = f"Edge_Node_{i}"
-            self.nodes[node_id] = EdgeNode(node_id=node_id, base_latency=12.0 + i * 2.0)
+            self.nodes[node_id] = EdgeNode(
+                node_id=node_id,
+                base_latency=12.0 + i * 2.0,
+                env=self.env,
+            )
 
         # Create IoT Devices
         self.devices: List[IoTDevice] = []
@@ -57,6 +66,41 @@ class EdgeSimulation:
         self.workload_gen = WorkloadGenerator(self.devices)
         self.current_step: int = 0
         self.active_fault_records: List[Dict] = []
+
+    def _generate_step_tasks(self, node: EdgeNode, workload: float, sim_time: float):
+        # Generate discrete individual task arrivals across [sim_time, sim_time + step_size).
+        # Workload offloading mitigation reduces arriving task demand rate.
+        arrival_rate = workload * node.workload_mitigation
+        if arrival_rate <= 0.0:
+            return
+
+        if self.poisson_arrivals:
+            t_offset = 0.0
+            while True:
+                inter_arr = self.rng.expovariate(arrival_rate)
+                t_offset += inter_arr
+                if t_offset >= self.step_size:
+                    break
+                self._task_counter += 1
+                task = Task(
+                    task_id=f"Task_{node.node_id}_{self._task_counter}",
+                    edge_node_id=node.node_id,
+                    arrival_time=sim_time + t_offset,
+                    base_service_time=node.base_service_time,
+                )
+                self.env.process(node.schedule_task(task, delay=t_offset))
+        else:
+            num_tasks = int(round(arrival_rate * self.step_size))
+            for i in range(num_tasks):
+                self._task_counter += 1
+                t_offset = (i + 0.5) * (self.step_size / max(1, num_tasks))
+                task = Task(
+                    task_id=f"Task_{node.node_id}_{self._task_counter}",
+                    edge_node_id=node.node_id,
+                    arrival_time=sim_time + t_offset,
+                    base_service_time=node.base_service_time,
+                )
+                self.env.process(node.schedule_task(task, delay=t_offset))
 
     def register_active_fault(self, node_id: str, fault_type_str: str, severity: float):
         # Register active fault injection on target edge node.
@@ -81,13 +125,20 @@ class EdgeSimulation:
         # Advance simulation by one tick step size and sample TelemetryRecords
         # from all active Edge Nodes.
         sim_time = self.env.now
-        records = []
 
+        # 1. Update physical state and schedule discrete tasks for all nodes
         for node_id, node in self.nodes.items():
-            # Calculate current workload demand
             workload = self.workload_gen.get_aggregated_workload_for_node(node_id, sim_time)
             node.update_metrics(workload)
+            self._generate_step_tasks(node, workload, sim_time)
 
+        # 2. Advance SimPy discrete-event simulation to execute queued tasks
+        self.env.run(until=self.env.now + self.step_size)
+        self.current_step += 1
+
+        # 3. Sample TelemetryRecord containing physical metrics and per-node task metrics
+        records = []
+        for node_id, node in self.nodes.items():
             # Determine fault label and active fault type
             is_fault = 1 if (node.fault_cpu_offset > 0 or node.fault_mem_offset > 0 or
                             node.fault_net_offset > 0 or node.fault_lat_offset > 0 or
@@ -117,12 +168,17 @@ class EdgeSimulation:
                 fault_label=is_fault,
                 fault_type=active_f_type,
                 original_label="SIMULATED_FAULT" if is_fault else "NORMAL",
+                task_arrivals=node.task_arrivals,
+                completed_tasks=node.completed_tasks,
+                successful_tasks=node.successful_tasks,
+                failed_tasks=node.failed_tasks,
+                queue_length=node.queue_length,
+                tasks_in_service=node.tasks_in_service,
+                average_task_execution_time=round(node.average_task_execution_time, 4),
+                task_success_rate=round(node.task_success_rate, 4),
             )
             records.append(rec)
 
-        # Advance simpy environment time
-        self.env.run(until=self.env.now + self.step_size)
-        self.current_step += 1
         return records
 
     def apply_recovery(self, node_id: str, action: str) -> bool:

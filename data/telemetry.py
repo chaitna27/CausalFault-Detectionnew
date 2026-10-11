@@ -35,10 +35,33 @@ class TelemetryRecord:
     device_type: Optional[str] = None           # e.g., "IoT_Fridge", "IoT_Weather"
     raw_features: Dict[str, Any] = field(default_factory=dict) # Raw sensor payload key-values
 
+    # Discrete SimPy Task Processing Performance Metrics (per edge node)
+    task_arrivals: Optional[int] = None
+    completed_tasks: Optional[int] = None
+    successful_tasks: Optional[int] = None
+    failed_tasks: Optional[int] = None
+    queue_length: Optional[int] = None
+    tasks_in_service: Optional[int] = None
+    average_task_execution_time: Optional[float] = None
+    task_success_rate: Optional[float] = None
+
     def to_dict(self) -> Dict[str, Any]:
         # Convert record to dictionary representation.
         d = asdict(self)
         return d
+
+    def get_task_metrics(self) -> Dict[str, Any]:
+        # Extract per-node discrete task performance metrics.
+        return {
+            "task_arrivals": self.task_arrivals,
+            "completed_tasks": self.completed_tasks,
+            "successful_tasks": self.successful_tasks,
+            "failed_tasks": self.failed_tasks,
+            "queue_length": self.queue_length,
+            "tasks_in_service": self.tasks_in_service,
+            "average_task_execution_time": self.average_task_execution_time,
+            "task_success_rate": self.task_success_rate,
+        }
 
     def get_available_features(self) -> Dict[str, float]:
         # Extract numerical telemetry feature dimensions that are not None.

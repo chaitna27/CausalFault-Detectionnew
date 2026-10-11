@@ -4,10 +4,12 @@
 # DataSource interface, generating TelemetryRecord streams for real-time detection,
 # causal analysis, and adaptive recovery experiments.
 
-from typing import Generator, Optional
+from typing import Generator, Optional, TYPE_CHECKING
 import logging
 from .telemetry import TelemetryRecord, DataSource
-from simulation.edge_simulation import EdgeSimulation
+
+if TYPE_CHECKING:
+    from simulation.edge_simulation import EdgeSimulation
 
 logger = logging.getLogger(__name__)
 
@@ -17,13 +19,17 @@ class SimulatorAdapter(DataSource):
 
     def __init__(
         self,
-        simulation: Optional[EdgeSimulation] = None,
+        simulation: Optional["EdgeSimulation"] = None,
         max_steps: int = 300,
         seed: int = 42,
     ):
         self.max_steps = max_steps
         self.seed = seed
-        self.simulation = simulation if simulation is not None else EdgeSimulation(seed=seed)
+        if simulation is not None:
+            self.simulation = simulation
+        else:
+            from simulation.edge_simulation import EdgeSimulation
+            self.simulation = EdgeSimulation(seed=seed)
 
     def get_dataset_name(self) -> str:
         return "SimPy_Edge_IoT_Simulation"
