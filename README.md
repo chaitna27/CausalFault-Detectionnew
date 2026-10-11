@@ -7,11 +7,11 @@ This research project implements a **Causal Real-Time Adaptive Fault Tolerance**
 ## Architecture Overview
 
 ```text
-┌─────────────────────────────────────────────────────────┐
-│                       DATA SOURCES                      │
-│                                                         │
-│   SimPy Edge Simulation │ Edge-IIoTset │ TON_IoT │ N-BaIoT│
-└────────────────────────────┬────────────────────────────┘
+┌────────────────────────────────────────────────────────────┐
+│                       DATA SOURCES                         │
+│                                                            │
+│   SimPy Edge Simulation │ Edge-IIoTset │ TON_IoT │ N-BaIoT │
+└────────────────────────────┬───────────────────────────────┘
                              │
                              ▼
                   Data Source Adapters
