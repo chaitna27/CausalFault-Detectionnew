@@ -125,12 +125,33 @@ python main.py --mode experiment --seed-start 42 --num-seeds 10
 python main.py --mode sensitivity
 ```
 
+### 4. Generating Publication Figures & Evaluation Visualizations
+
+Generate the complete publication-quality evaluation visualization suite (26 unique figures in both high-resolution PNG at 300 DPI and vector PDF) and technical summary report:
+
+```bash
+python scripts/plot_evaluation_results.py
+```
+
+Outputs are saved to `results/figures/`, with comprehensive documentation in `results/visualization_summary.md`.
+
 ---
 
 ## Generated Results & Visualizations
 
-Results are saved under `results/`:
-- `results/data/dataset_detection_metrics.csv`: Dataset streaming evaluation metrics (Precision, Recall, F1, FPR, Processing Latency).
+Results and visualizations are saved under `results/`:
+- `results/figures/`: Publication-quality evaluation visualizations (26 unique figures, each in 300 DPI PNG and vector PDF), covering:
+  - Multi-algorithm classification metrics comparison (Accuracy, Balanced Accuracy, Precision, Recall, F1, FPR, Specificity, NPV)
+  - Full $2\times 2$ confusion matrix grid and individual threshold matrices ($\tau = 0.15, 0.30, 0.50, 0.65$)
+  - Multi-metric threshold tradeoff curves and individual sensitivity plots
+  - Continuous Precision–Recall curves and discrete iso-F1 contour scatter
+  - CRAFT-Edge closed-loop recovery episode breakdown, mitigation success rates, and availability
+  - Multi-seed stability analysis across seeds 42, 43, 44
+  - Computational throughput vs inference latency tradeoffs
+  - Peak resident memory (RSS) and energy consumption profiles
+  - Root-cause localization Top-k recall and latency vs RCD
+- `results/visualization_summary.md`: Detailed technical summary of all generated figures, data sources, and metric formulations.
+- `results/data/dataset_detection_metrics.csv`: Dataset streaming evaluation metrics.
 - `results/data/dataset_device_metrics.csv`: Per-device telemetry breakdown.
 - `results/data/causal_results.csv`: Inferred root causes and causal treatment effects.
 - `results/plots/dataset_precision_recall_f1.png`: Detection Precision, Recall, and F1-Score.
