@@ -319,6 +319,20 @@ class ComprehensiveVisualizer:
         self.dpi = dpi
         self.generated_files = []
 
+    def _get_benchmark_metric(self, algo_id: str, metric_name: str) -> tuple:
+        """Extracts (mean, std) for a given algorithm and metric from benchmark_mean_std_df."""
+        if self.data.benchmark_mean_std_df is not None:
+            sub = self.data.benchmark_mean_std_df[
+                (self.data.benchmark_mean_std_df["algorithm_id"] == algo_id) &
+                (self.data.benchmark_mean_std_df["metric"] == metric_name)
+            ]
+            if len(sub) > 0:
+                row = sub.iloc[0]
+                m = float(row["mean"]) if str(row["mean"]) != "N/A" else 0.0
+                s = float(row["std"]) if str(row["std"]) != "N/A" else 0.0
+                return m, s
+        return 0.0, 0.0
+
     def run_all(self):
         print(f"\nGenerating all publication figures into: {self.output_dir}\n" + "=" * 60)
         self.plot_classification_metrics_comparison()
@@ -684,11 +698,11 @@ class ComprehensiveVisualizer:
             return
 
         plots_spec = [
-            ("accuracy", "Accuracy", "Accuracy vs Detection Threshold", "accuracy_by_threshold", "#2b83ba", (60, 85)),
-            ("precision", "Precision", "Precision vs Detection Threshold", "precision_by_threshold", "#1f78b4", (0, 55)),
-            ("recall", "Recall / Sensitivity", "Recall vs Detection Threshold", "recall_by_threshold", "#e31a1c", (0, 75)),
-            ("f1", "F1-Score", "F1-Score vs Detection Threshold", "f1_score_by_threshold", "#ff7f00", (0, 60)),
-            ("fpr", "False Positive Rate (FPR)", "False Positive Rate vs Detection Threshold", "false_positive_rate_by_threshold", "#6a3d9a", (0, 35)),
+            ("accuracy", "Accuracy", "Accuracy vs Detection Threshold", "accuracy_by_threshold", "#2b83ba", (0, 105)),
+            ("precision", "Precision", "Precision vs Detection Threshold", "precision_by_threshold", "#1f78b4", (0, 105)),
+            ("recall", "Recall / Sensitivity", "Recall vs Detection Threshold", "recall_by_threshold", "#e31a1c", (0, 105)),
+            ("f1", "F1-Score", "F1-Score vs Detection Threshold", "f1_score_by_threshold", "#ff7f00", (0, 105)),
+            ("fpr", "False Positive Rate (FPR)", "False Positive Rate vs Detection Threshold", "false_positive_rate_by_threshold", "#6a3d9a", (0, 105)),
         ]
 
         thresholds = df_t["threshold"].values
@@ -716,7 +730,7 @@ class ComprehensiveVisualizer:
             ax.set_xticks(thresholds)
             ax.set_xticklabels([f"{t:.2f}" for t in thresholds], fontsize=11)
             ax.set_ylim(y_lim[0], y_lim[1])
-            ax.yaxis.set_major_locator(ticker.AutoLocator())
+            ax.yaxis.set_major_locator(ticker.MultipleLocator(20))
             ax.legend(frameon=True, loc="best")
 
             self.generated_files.extend(save_dual_figure(fig, base_name, self.output_dir, self.dpi))
@@ -724,19 +738,12 @@ class ComprehensiveVisualizer:
     def plot_successful_recoveries_by_threshold(self):
         """Generates successful recovery count versus threshold.
         Carefully adheres to reality: threshold 0.65 has 21 successful out of 24 episodes;
+        threshold 0.15 has 194 verified mitigation actions;
         thresholds 0.30 and 0.50 recovery experiments were not executed and are explicitly
-        reported as unmeasured without fabricating data."""
+        reported as unmeasured without fabricating data or drawing zero-height bars."""
         fig, ax = plt.subplots(figsize=(8, 5.2))
-        thresholds = [0.15, 0.30, 0.50, 0.65]
 
-        # Actual verified data
-        # At tau=0.65: CRAFT-Edge recorded 21 successful recoveries (out of 24 episodes) in full_benchmark_results.json
-        # At tau=0.15: Causal FT validation closed-loop mitigation logged 194 mitigation actions in benchmark_summary_mean_std.csv
-        # At tau=0.30 & 0.50: No recovery benchmark runs were conducted
-        measured_thresholds = [0.15, 0.65]
-        measured_recoveries = [194, 21]
-        unmeasured_thresholds = [0.30, 0.50]
-
+        # Only draw bars for empirically measured recovery configurations
         bars_meas = ax.bar(
             [0, 3],
             [194, 21],
@@ -745,17 +752,7 @@ class ComprehensiveVisualizer:
             edgecolor="#222222",
             linewidth=0.8,
             alpha=0.9,
-            label="Verified Measured Actions",
-        )
-        bars_unmeas = ax.bar(
-            [1, 2],
-            [0, 0],
-            width=0.45,
-            color="#dddddd",
-            edgecolor="#888888",
-            hatch="//",
-            linewidth=0.8,
-            label="Unmeasured (No Benchmark Run)",
+            label="Empirically Measured Mitigations / Recoveries",
         )
 
         ax.annotate(
@@ -778,26 +775,18 @@ class ComprehensiveVisualizer:
             fontweight="bold",
             color="#008080",
         )
-        ax.annotate(
-            "UNMEASURED\n(No run executed)",
-            xy=(1, 5),
-            xytext=(0, 6),
-            textcoords="offset points",
-            ha="center",
-            fontsize=8.5,
-            fontstyle="italic",
-            color="#666666",
-        )
-        ax.annotate(
-            "UNMEASURED\n(No run executed)",
-            xy=(2, 5),
-            xytext=(0, 6),
-            textcoords="offset points",
-            ha="center",
-            fontsize=8.5,
-            fontstyle="italic",
-            color="#666666",
-        )
+
+        # Draw shaded placeholder regions for unmeasured positions without 0-height bars
+        for pos in [1, 2]:
+            ax.text(
+                pos, 35,
+                "UNMEASURED\n(No Recovery Run\nExecuted)",
+                ha="center", va="center",
+                fontsize=8.5,
+                fontweight="bold",
+                color="#555555",
+                bbox=dict(boxstyle="round,pad=0.5", facecolor="#f0f0f0", edgecolor="#aaaaaa", linestyle="--")
+            )
 
         ax.set_ylabel("Successful Mitigations / Recoveries (Count)", fontsize=12)
         ax.set_xlabel("Detection Threshold (τ)", fontsize=12)
@@ -1020,44 +1009,42 @@ class ComprehensiveVisualizer:
         # CRAFT-Edge (full_benchmark_results.json): 87.5% (21/24)
         # IPFT (preemptive container migration): 100.0% unconstrained migration
         # PreGAN (preemptive container migration): 100.0% on seeds 42,44; 0.0% on seed 43 -> 66.7% mean
-        # BWOAIF and RCD do not implement closed-loop recovery -> N/A
-        approaches = ["CRAFT-Edge (Ours)", "IPFT", "PreGAN", "BWOAIF", "RCD"]
-        rates = [87.5, 100.0, 66.7, 0.0, 0.0]
-        stds = [0.0, 0.0, 47.1, 0.0, 0.0]
-        colors = ["#008080", "#ff7f0e", "#d62728", "#cccccc", "#cccccc"]
+        # Note: BWOAIF and RCD do not implement closed-loop recovery -> excluded from bar comparison
+        # to avoid misrepresenting missing capabilities as zero.
+        approaches = ["CRAFT-Edge (Ours)", "IPFT", "PreGAN"]
+        rates = [87.5, 100.0, 66.7]
+        stds = [0.0, 0.0, 47.1]
+        colors = ["#008080", "#ff7f0e", "#d62728"]
 
         bars = ax.bar(
             approaches,
             rates,
             yerr=stds,
             capsize=4,
-            width=0.48,
+            width=0.45,
             color=colors,
             edgecolor="#222222",
             linewidth=0.7,
             alpha=0.9,
         )
 
-        for i, (bar, val) in enumerate(zip(bars, rates)):
-            if i < 3:
-                ax.annotate(
-                    f"{val:.1f}%",
-                    xy=(bar.get_x() + bar.get_width() / 2, bar.get_height() + 2),
-                    ha="center",
-                    va="bottom",
-                    fontsize=10,
-                    fontweight="bold",
-                )
-            else:
-                ax.annotate(
-                    "N/A\n(No FT)",
-                    xy=(bar.get_x() + bar.get_width() / 2, 5),
-                    ha="center",
-                    va="bottom",
-                    fontsize=8.5,
-                    color="#666666",
-                    fontstyle="italic",
-                )
+        for bar, val in zip(bars, rates):
+            ax.annotate(
+                f"{val:.1f}%",
+                xy=(bar.get_x() + bar.get_width() / 2, bar.get_height() + 2),
+                ha="center",
+                va="bottom",
+                fontsize=10.5,
+                fontweight="bold",
+            )
+
+        # Footnote explaining exclusion of non-recovery baseline algorithms
+        ax.text(
+            0.5, -0.16,
+            "Note: Baseline models BWOAIF (Hannák et al.) and RCD (Ikram et al.) do not implement closed-loop\nfault recovery or migration mechanisms; they are omitted to avoid misrepresenting missing capabilities as 0%.",
+            ha="center", va="top", transform=ax.transAxes,
+            fontsize=8.5, fontstyle="italic", color="#555555"
+        )
 
         ax.set_ylabel("Mitigation / Recovery Success Rate (%)", fontsize=12)
         ax.set_title("Autonomous Fault Mitigation & Recovery Success Rate\n(Closed-Loop Adaptive Action Execution)", pad=14, fontsize=12.5)
@@ -1118,14 +1105,14 @@ class ComprehensiveVisualizer:
         ax1.set_ylabel("F1-Score (%)", fontsize=11)
         ax1.set_title("Detection F1-Score Stability Across Seeds", fontsize=12, pad=10)
         ax1.set_xticks(seeds)
-        ax1.set_ylim(-2, 65)
+        ax1.set_ylim(0, 65)
         ax1.legend(frameon=True, fontsize=9)
 
         ax2.set_xlabel("Random Seed", fontsize=11)
         ax2.set_ylabel("Accuracy (%)", fontsize=11)
         ax2.set_title("Classification Accuracy Stability Across Seeds", fontsize=12, pad=10)
         ax2.set_xticks(seeds)
-        ax2.set_ylim(15, 85)
+        ax2.set_ylim(0, 105)
 
         fig.suptitle("Reproducibility & Stability Across Independent Random Seeds (42, 43, 44)", fontsize=13, y=1.02)
         self.generated_files.extend(save_dual_figure(fig, "seed_stability_metrics", self.output_dir, self.dpi))
@@ -1134,67 +1121,81 @@ class ComprehensiveVisualizer:
     # H. Computational Throughput & Latency Tradeoff
     # -------------------------------------------------------------------------
     def plot_throughput_latency_tradeoff(self):
-        """Throughput versus inference latency scatter/bar trade-off."""
-        # Verified data from algorithm_comparison_summary.csv
-        algos = ["Causal FT", "IPFT", "BWOAIF", "RCD", "PreGAN"]
-        tp_means = [501.0, 276.5, 491.9, 697.8, 464.1]
-        tp_stds = [8.3, 11.4, 15.7, 25.9, 257.1]
-        lat_means = [0.4236, 1.6779, 0.1905, 0.0050, 1.2059]
-        lat_stds = [0.0035, 0.1035, 0.0051, 0.0002, 0.5344]
-        colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#9467bd", "#d62728"]
+        """Throughput versus inference latency trade-off parsed directly from benchmark_mean_std_df."""
+        algos = ["proposed_causal_ft", "paper1_ipft", "paper2_bwoaif", "paper3_rcd", "paper4_pregan"]
+        algo_labels = ["Proposed Causal FT", "IPFT", "BWOAIF", "RCD", "PreGAN"]
+        colors = [ALGO_COLORS[aid] for aid in algos]
+
+        tp_means, tp_stds = [], []
+        lat_means, lat_stds = [], []
+        for aid in algos:
+            m_tp, s_tp = self._get_benchmark_metric(aid, "Processing Throughput")
+            tp_means.append(m_tp)
+            tp_stds.append(s_tp)
+
+            m_lat, s_lat = self._get_benchmark_metric(aid, "Per-Record Inference Latency (Mean)")
+            lat_means.append(m_lat)
+            lat_stds.append(s_lat)
 
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
 
         # Throughput bar
-        b1 = ax1.bar(algos, tp_means, yerr=tp_stds, capsize=4, width=0.48, color=colors, edgecolor="#222", alpha=0.9)
+        b1 = ax1.bar(algo_labels, tp_means, yerr=tp_stds, capsize=4, width=0.48, color=colors, edgecolor="#222", alpha=0.9)
         for b, v in zip(b1, tp_means):
-            ax1.annotate(f"{v:.1f}", xy=(b.get_x() + b.get_width() / 2, b.get_height() + 15), ha="center", fontsize=9.5, fontweight="bold")
+            ax1.annotate(f"{v:.1f}", xy=(b.get_x() + b.get_width() / 2, b.get_height() + 30), ha="center", fontsize=9.5, fontweight="bold")
         ax1.set_ylabel("Processing Throughput (records/sec)", fontsize=11)
         ax1.set_title("Processing Throughput Comparison\n(Higher is Better)", fontsize=12, pad=10)
-        ax1.set_ylim(0, 850)
+        ax1.set_ylim(0, 2400)
 
         # Latency bar
-        b2 = ax2.bar(algos, lat_means, yerr=lat_stds, capsize=4, width=0.48, color=colors, edgecolor="#222", alpha=0.9)
+        b2 = ax2.bar(algo_labels, lat_means, yerr=lat_stds, capsize=4, width=0.48, color=colors, edgecolor="#222", alpha=0.9)
         for b, v in zip(b2, lat_means):
-            ax2.annotate(f"{v:.3f}", xy=(b.get_x() + b.get_width() / 2, b.get_height() + 0.04), ha="center", fontsize=9.5, fontweight="bold")
+            ax2.annotate(f"{v:.4f}", xy=(b.get_x() + b.get_width() / 2, b.get_height() + 0.04), ha="center", fontsize=9, fontweight="bold")
         ax2.set_ylabel("Mean Inference Latency (ms/record)", fontsize=11)
         ax2.set_title("Inference Latency Comparison\n(Lower is Better)", fontsize=12, pad=10)
-        ax2.set_ylim(0, 2.2)
+        ax2.set_ylim(0, 2.5)
 
-        fig.suptitle("Computational Efficiency: Stream Throughput vs Inference Latency", fontsize=13, y=1.02)
+        fig.suptitle("Computational Efficiency: Stream Throughput vs Inference Latency\n(Edge-IIoTset 24,000 Test Records, 3 Seeds 42-44, Mean ± Std)", fontsize=13, y=1.03)
         self.generated_files.extend(save_dual_figure(fig, "throughput_latency_tradeoff", self.output_dir, self.dpi))
 
     # -------------------------------------------------------------------------
     # I. Resource Utilization and Estimated Energy
     # -------------------------------------------------------------------------
     def plot_resource_utilization_and_energy(self):
-        """Dual-panel: Peak Resident Memory RSS (MB) and Estimated Energy Consumption (Joules)."""
-        algos = ["Causal FT", "IPFT", "BWOAIF", "RCD", "PreGAN"]
-        colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#9467bd", "#d62728"]
+        """Dual-panel: Peak Resident Memory RSS (MB) and Estimated Energy Consumption (Joules)
+        parsed directly from benchmark_mean_std_df."""
+        algos = ["proposed_causal_ft", "paper1_ipft", "paper2_bwoaif", "paper3_rcd", "paper4_pregan"]
+        algo_labels = ["Proposed Causal FT", "IPFT", "BWOAIF", "RCD", "PreGAN"]
+        colors = [ALGO_COLORS[aid] for aid in algos]
 
-        mem_means = [343.2, 430.5, 419.9, 420.4, 420.6]
-        mem_stds = [1.5, 8.3, 0.1, 0.0, 0.6]
+        mem_means, mem_stds = [], []
+        energy_means, energy_stds = [], []
+        for aid in algos:
+            m_mem, s_mem = self._get_benchmark_metric(aid, "Peak Resident Set Size (RSS)")
+            mem_means.append(m_mem)
+            mem_stds.append(s_mem)
 
-        energy_means = [304.6, 555.1, 310.5, 218.8, 392.5]
-        energy_stds = [4.4, 23.4, 9.5, 8.0, 168.3]
+            m_ene, s_ene = self._get_benchmark_metric(aid, "Estimated Energy Consumption")
+            energy_means.append(m_ene)
+            energy_stds.append(s_ene)
 
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
 
-        b1 = ax1.bar(algos, mem_means, yerr=mem_stds, capsize=4, width=0.48, color=colors, edgecolor="#222", alpha=0.9)
+        b1 = ax1.bar(algo_labels, mem_means, yerr=mem_stds, capsize=4, width=0.48, color=colors, edgecolor="#222", alpha=0.9)
         for b, v in zip(b1, mem_means):
-            ax1.annotate(f"{v:.1f}", xy=(b.get_x() + b.get_width() / 2, b.get_height() + 8), ha="center", fontsize=9.5, fontweight="bold")
+            ax1.annotate(f"{v:.1f} MB", xy=(b.get_x() + b.get_width() / 2, b.get_height() + 8), ha="center", fontsize=9.5, fontweight="bold")
         ax1.set_ylabel("Peak Resident Memory (RSS in MB)", fontsize=11)
-        ax1.set_title("Memory Footprint\n(Lower is Better, Causal FT is ~18% Leaner)", fontsize=12, pad=10)
-        ax1.set_ylim(250, 480)
+        ax1.set_title("Memory Footprint\n(Lower is Better, Causal FT is ~19% Leaner)", fontsize=12, pad=10)
+        ax1.set_ylim(0, 500)
 
-        b2 = ax2.bar(algos, energy_means, yerr=energy_stds, capsize=4, width=0.48, color=colors, edgecolor="#222", alpha=0.9)
+        b2 = ax2.bar(algo_labels, energy_means, yerr=energy_stds, capsize=4, width=0.48, color=colors, edgecolor="#222", alpha=0.9)
         for b, v in zip(b2, energy_means):
             ax2.annotate(f"{v:.1f} J", xy=(b.get_x() + b.get_width() / 2, b.get_height() + 15), ha="center", fontsize=9.5, fontweight="bold")
         ax2.set_ylabel("Estimated Energy Consumption (Joules)", fontsize=11)
         ax2.set_title("Energy Consumption Over 24,000 Records\n(Lower is Better)", fontsize=12, pad=10)
-        ax2.set_ylim(0, 650)
+        ax2.set_ylim(0, 750)
 
-        fig.suptitle("Resource Efficiency: Resident Memory Footprint and Energy Consumption", fontsize=13, y=1.02)
+        fig.suptitle("Resource Efficiency: Resident Memory Footprint and Energy Consumption\n(Edge-IIoTset 24,000 Test Records, 3 Seeds 42-44, Mean ± Std)", fontsize=13, y=1.03)
         self.generated_files.extend(save_dual_figure(fig, "resource_utilization_energy", self.output_dir, self.dpi))
 
     # -------------------------------------------------------------------------
