@@ -10,6 +10,7 @@
 # 6. Telemetry compatibility preserving 7-feature PyTorch autoencoder vector and causal graph.
 
 import unittest
+# pyrefly: ignore [missing-import]
 import simpy
 import numpy as np
 
