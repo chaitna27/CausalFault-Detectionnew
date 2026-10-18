@@ -35,13 +35,6 @@ class CausalGraphSpecification:
         self.dag: nx.DiGraph = nx.DiGraph()
         self.edge_weights: Dict[Tuple[str, str], float] = {}
         self.domain_edges: Set[Tuple[str, str]] = set()
-        self._descendants_cache: Optional[Dict[str, List[str]]] = None
-        self._parents_cache: Optional[Dict[str, List[str]]] = None
-
-    def _invalidate_cache(self) -> None:
-        # Invalidate reachability and adjacency caches upon graph mutation.
-        self._descendants_cache = None
-        self._parents_cache = None
 
     def add_causal_edge(
         self,
@@ -55,7 +48,6 @@ class CausalGraphSpecification:
         self.edge_weights[(u, v)] = weight
         if is_domain:
             self.domain_edges.add((u, v))
-        self._invalidate_cache()
 
     def build_domain_graph(self, feature_names: List[str]) -> None:
         # Initializes domain-informed causal dependencies for Edge-IIoTset telemetry.
@@ -114,25 +106,12 @@ class CausalGraphSpecification:
             self.dag.number_of_nodes(),
             self.dag.number_of_edges(),
         )
-        self._invalidate_cache()
 
     def get_parents(self, node: str) -> List[str]:
-        if node not in self.dag:
-            return []
-        if self._parents_cache is None:
-            self._parents_cache = {}
-        if node not in self._parents_cache:
-            self._parents_cache[node] = list(self.dag.predecessors(node))
-        return self._parents_cache[node]
+        return list(self.dag.predecessors(node)) if node in self.dag else []
 
     def get_descendants(self, node: str) -> List[str]:
-        if node not in self.dag:
-            return []
-        if self._descendants_cache is None:
-            self._descendants_cache = {}
-        if node not in self._descendants_cache:
-            self._descendants_cache[node] = list(nx.descendants(self.dag, node))
-        return self._descendants_cache[node]
+        return list(nx.descendants(self.dag, node)) if node in self.dag else []
 
 
 class CausalInferenceEngine:
