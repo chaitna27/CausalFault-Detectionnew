@@ -22,13 +22,63 @@ from algorithms.base import (
     MitigationResult,
 )
 from algorithms.causal_ft.detector import StreamingCausalDetector, DetectorConfig
-from algorithms.causal_ft.causal_engine import CausalInferenceEngine
+from algorithms.causal_ft.causal_engine import CausalInferenceEngine, CausalGraphSpecification
+import networkx as nx
 from evaluation.context import BenchmarkInput
 from .policy import AdaptiveEfficacyPolicy, RecoveryAction, classify_root_cause
 from .evaluator import RecoveryOutcomeEvaluator, RecoveryOutcome
 from .shadow_state import ShadowNodeState
 
 logger = logging.getLogger("CRAFTEdge.Pipeline")
+
+
+class CraftCausalGraphSpecification(CausalGraphSpecification):
+    """Craft-optimized Causal Graph Specification with lazy reachability and adjacency caching.
+
+    Accelerates causal root-cause analysis by lazily caching node descendants and predecessors
+    on static graph topologies, while automatically invalidating the cache upon graph mutation.
+    """
+
+    def __init__(self):
+        super().__init__()
+        self._descendants_cache: Optional[Dict[str, Tuple[str, ...]]] = None
+        self._parents_cache: Optional[Dict[str, Tuple[str, ...]]] = None
+
+    def _invalidate_cache(self) -> None:
+        self._descendants_cache = None
+        self._parents_cache = None
+
+    def add_causal_edge(
+        self,
+        u: str,
+        v: str,
+        weight: float = 1.0,
+        is_domain: bool = True
+    ) -> None:
+        super().add_causal_edge(u, v, weight=weight, is_domain=is_domain)
+        self._invalidate_cache()
+
+    def build_domain_graph(self, feature_names: List[str]) -> None:
+        super().build_domain_graph(feature_names)
+        self._invalidate_cache()
+
+    def get_parents(self, node: str) -> List[str]:
+        if node not in self.dag:
+            return []
+        if self._parents_cache is None:
+            self._parents_cache = {}
+        if node not in self._parents_cache:
+            self._parents_cache[node] = tuple(self.dag.predecessors(node))
+        return list(self._parents_cache[node])
+
+    def get_descendants(self, node: str) -> List[str]:
+        if node not in self.dag:
+            return []
+        if self._descendants_cache is None:
+            self._descendants_cache = {}
+        if node not in self._descendants_cache:
+            self._descendants_cache[node] = tuple(nx.descendants(self.dag, node))
+        return list(self._descendants_cache[node])
 
 
 @dataclass
@@ -71,8 +121,8 @@ class CRAFTEdgePipeline(BaseFaultToleranceAlgorithm):
             DetectorConfig(threshold=self.cfg.detection_threshold)
         )
 
-        # 2. Causal Engine (reusing existing fast SEM diagnosis path)
-        self.causal_engine = CausalInferenceEngine()
+        # 2. Causal Engine (reusing existing fast SEM diagnosis path with Craft-optimized lazy reachability graph)
+        self.causal_engine = CausalInferenceEngine(causal_graph=CraftCausalGraphSpecification())
 
         # 3. Adaptive Action Efficacy Policy
         self.policy = AdaptiveEfficacyPolicy(
@@ -199,7 +249,10 @@ class CRAFTEdgePipeline(BaseFaultToleranceAlgorithm):
         # Handle TelemetryRecord from simulation or data adapter
         if hasattr(record, "get_available_features"):
             feats = record.get_available_features()
-            feature_vec = np.array(list(feats.values()), dtype=np.float64)
+            if hasattr(record, "feature_vector") and getattr(record, "feature_vector", None) is not None:
+                feature_vec = record.feature_vector
+            else:
+                feature_vec = np.array(list(feats.values()), dtype=np.float64)
             pos = getattr(record, "stream_position", self.processed_records_count)
             ts = float(getattr(record, "timestamp", time.time()))
             dev_id = str(getattr(record, "device_id", "dev_0"))
@@ -264,7 +317,7 @@ class CRAFTEdgePipeline(BaseFaultToleranceAlgorithm):
         shadow_node.update_from_telemetry(obs_input.features)
 
         # 1. Online Streaming Anomaly Detection
-        det_result = self.detect(obs_input)
+        det_result = self.detector.detect(obs_input)
 
         diagnosis: Optional[RCADiagnosisResult] = None
         mitigation: Optional[MitigationResult] = None
