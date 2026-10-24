@@ -8,7 +8,9 @@
     "gpu_present": false
   },
   "seeds": [
-    42
+    42,
+    43,
+    44
   ],
   "total_records_per_run": 1200,
   "warmup_records": 200,
@@ -18,59 +20,59 @@
       "threshold": 0.65,
       "aggregated": {
         "throughput_rec_sec": {
-          "mean": 1282.77,
-          "std": 0.0,
+          "mean": 1652.55,
+          "std": 26.0094,
           "ci_95": [
-            1282.77,
-            1282.77
+            1623.1176,
+            1681.9824
           ]
         },
         "per_record_latency_ms": {
-          "mean": 0.0581,
-          "std": 0.0,
+          "mean": 0.0402,
+          "std": 0.0005,
           "ci_95": [
-            0.0581,
-            0.0581
+            0.0397,
+            0.0408
           ]
         },
         "per_record_latency_p95_ms": {
-          "mean": 0.1045,
-          "std": 0.0,
+          "mean": 0.071,
+          "std": 0.0021,
           "ci_95": [
-            0.1045,
-            0.1045
+            0.0685,
+            0.0734
           ]
         },
         "avg_cpu_percent": {
-          "mean": 95.88,
-          "std": 0.0,
+          "mean": 98.3933,
+          "std": 3.4915,
           "ci_95": [
-            95.88,
-            95.88
+            94.4424,
+            102.3443
           ]
         },
         "peak_rss_mb": {
-          "mean": 312.72,
-          "std": 0.0,
+          "mean": 312.9033,
+          "std": 0.2894,
           "ci_95": [
-            312.72,
-            312.72
+            312.5759,
+            313.2308
           ]
         },
         "bandwidth_kb_sec": {
-          "mean": 3248.36,
-          "std": 0.0,
+          "mean": 4184.7933,
+          "std": 65.8855,
           "ci_95": [
-            3248.36,
-            3248.36
+            4110.2369,
+            4259.3498
           ]
         },
         "estimated_energy_joules": {
-          "mean": 4.5831,
-          "std": 0.0,
+          "mean": 3.662,
+          "std": 0.0324,
           "ci_95": [
-            4.5831,
-            4.5831
+            3.6253,
+            3.6987
           ]
         },
         "operational_recovery_cost": {
@@ -123,12 +125,12 @@
         },
         "mttd_ms": 22531.491,
         "diagnosis_latency_ms": 15707.797,
-        "recovery_latency_ms": 5244.947,
-        "end_to_end_latency_ms": 17272.802,
+        "recovery_latency_ms": 5244.948,
+        "end_to_end_latency_ms": 17272.801,
         "availability_percent": 0.0,
         "mttf_seconds": 0.0,
         "mttr_seconds": 27.78,
-        "migration_bandwidth_kb_sec": 2791.71,
+        "migration_bandwidth_kb_sec": 3571.05,
         "recovery_summary": {
           "total_recovery_episodes": 24,
           "successful_recoveries": 21,
@@ -144,15 +146,15 @@
         {
           "seed": 42,
           "eval_records": 1000,
-          "elapsed_seconds": 0.7336,
-          "throughput_rec_sec": 1282.77,
-          "per_record_latency_ms": 0.0581,
-          "per_record_latency_p95_ms": 0.1045,
-          "avg_cpu_percent": 95.88,
-          "peak_rss_mb": 312.72,
-          "bandwidth_kb_sec": 3248.36,
-          "migration_bandwidth_kb_sec": 2791.71,
-          "estimated_energy_joules": 4.5831,
+          "elapsed_seconds": 0.5735,
+          "throughput_rec_sec": 1681.92,
+          "per_record_latency_ms": 0.0403,
+          "per_record_latency_p95_ms": 0.0723,
+          "avg_cpu_percent": 100.87,
+          "peak_rss_mb": 312.57,
+          "bandwidth_kb_sec": 4259.19,
+          "migration_bandwidth_kb_sec": 3571.05,
+          "estimated_energy_joules": 3.6705,
           "operational_recovery_cost": 0.0346,
           "precision": 26.92,
           "recall": 2.61,
@@ -161,8 +163,84 @@
           "pr_auc": 0.4139,
           "mttd_ms": 22531.491,
           "diagnosis_latency_ms": 15707.797,
-          "recovery_latency_ms": 5244.947,
-          "end_to_end_latency_ms": 17272.802,
+          "recovery_latency_ms": 5244.948,
+          "end_to_end_latency_ms": 17272.801,
+          "availability_percent": 0.0,
+          "mttf_seconds": 0.0,
+          "mttr_seconds": 27.78,
+          "total_actions": 24,
+          "slo_violation_rate": 0.0,
+          "recovery_summary": {
+            "total_recovery_episodes": 24,
+            "successful_recoveries": 21,
+            "recovery_success_rate": 0.875,
+            "mean_reward": 0.2617,
+            "mean_estimated_benefit": 0.357,
+            "mean_operational_cost": 0.3563,
+            "benefit_measurement_type": "SHADOW_SYNTHETIC_PROXY",
+            "measurement_notice": "Shadow-state proxy estimates; NOT physical hardware readings."
+          }
+        },
+        {
+          "seed": 43,
+          "eval_records": 1000,
+          "elapsed_seconds": 0.5856,
+          "throughput_rec_sec": 1632.43,
+          "per_record_latency_ms": 0.0407,
+          "per_record_latency_p95_ms": 0.0721,
+          "avg_cpu_percent": 94.4,
+          "peak_rss_mb": 313.05,
+          "bandwidth_kb_sec": 4133.82,
+          "migration_bandwidth_kb_sec": 3497.27,
+          "estimated_energy_joules": 3.6262,
+          "operational_recovery_cost": 0.0346,
+          "precision": 26.92,
+          "recall": 2.61,
+          "f1": 4.76,
+          "roc_auc": 0.6936,
+          "pr_auc": 0.4139,
+          "mttd_ms": 22531.491,
+          "diagnosis_latency_ms": 15707.797,
+          "recovery_latency_ms": 5244.948,
+          "end_to_end_latency_ms": 17272.801,
+          "availability_percent": 0.0,
+          "mttf_seconds": 0.0,
+          "mttr_seconds": 27.78,
+          "total_actions": 24,
+          "slo_violation_rate": 0.0,
+          "recovery_summary": {
+            "total_recovery_episodes": 24,
+            "successful_recoveries": 21,
+            "recovery_success_rate": 0.875,
+            "mean_reward": 0.2617,
+            "mean_estimated_benefit": 0.357,
+            "mean_operational_cost": 0.3563,
+            "benefit_measurement_type": "SHADOW_SYNTHETIC_PROXY",
+            "measurement_notice": "Shadow-state proxy estimates; NOT physical hardware readings."
+          }
+        },
+        {
+          "seed": 44,
+          "eval_records": 1000,
+          "elapsed_seconds": 0.5768,
+          "throughput_rec_sec": 1643.3,
+          "per_record_latency_ms": 0.0397,
+          "per_record_latency_p95_ms": 0.0685,
+          "avg_cpu_percent": 99.91,
+          "peak_rss_mb": 313.09,
+          "bandwidth_kb_sec": 4161.37,
+          "migration_bandwidth_kb_sec": 3550.62,
+          "estimated_energy_joules": 3.6894,
+          "operational_recovery_cost": 0.0346,
+          "precision": 26.92,
+          "recall": 2.61,
+          "f1": 4.76,
+          "roc_auc": 0.6936,
+          "pr_auc": 0.4139,
+          "mttd_ms": 22531.49,
+          "diagnosis_latency_ms": 15707.797,
+          "recovery_latency_ms": 5244.948,
+          "end_to_end_latency_ms": 17272.801,
           "availability_percent": 0.0,
           "mttf_seconds": 0.0,
           "mttr_seconds": 27.78,

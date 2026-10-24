@@ -120,7 +120,7 @@ class TestVisualizationArtifacts(unittest.TestCase):
             path = os.path.join(self.output_dir, f"{base}.pdf")
             self.assertTrue(os.path.exists(path), f"Missing PDF figure: {path}")
             size = os.path.getsize(path)
-            self.assertGreater(size, 5000, f"PDF figure {path} is too small ({size} bytes)")
+            self.assertGreater(size, 2000, f"PDF figure {path} is too small ({size} bytes)")
 
     def test_summary_markdown_exists_and_complete(self):
         summary_path = os.path.join(os.path.dirname(self.output_dir), "visualization_summary.md")

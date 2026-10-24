@@ -1,0 +1,185 @@
+{
+  "hardware_capacity": {
+    "cpu_model": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+    "physical_cores": 12,
+    "logical_cores": 16,
+    "base_frequency_mhz": 2200.0,
+    "total_ram_gb": 15.69,
+    "gpu_present": false
+  },
+  "seeds": [
+    42
+  ],
+  "total_records_per_run": 1200,
+  "warmup_records": 200,
+  "algorithms": {
+    "proposed_craft_edge": {
+      "name": "CRAFT-Edge (Ours, Adaptive Efficacy)",
+      "threshold": 0.65,
+      "aggregated": {
+        "throughput_rec_sec": {
+          "mean": 1282.77,
+          "std": 0.0,
+          "ci_95": [
+            1282.77,
+            1282.77
+          ]
+        },
+        "per_record_latency_ms": {
+          "mean": 0.0581,
+          "std": 0.0,
+          "ci_95": [
+            0.0581,
+            0.0581
+          ]
+        },
+        "per_record_latency_p95_ms": {
+          "mean": 0.1045,
+          "std": 0.0,
+          "ci_95": [
+            0.1045,
+            0.1045
+          ]
+        },
+        "avg_cpu_percent": {
+          "mean": 95.88,
+          "std": 0.0,
+          "ci_95": [
+            95.88,
+            95.88
+          ]
+        },
+        "peak_rss_mb": {
+          "mean": 312.72,
+          "std": 0.0,
+          "ci_95": [
+            312.72,
+            312.72
+          ]
+        },
+        "bandwidth_kb_sec": {
+          "mean": 3248.36,
+          "std": 0.0,
+          "ci_95": [
+            3248.36,
+            3248.36
+          ]
+        },
+        "estimated_energy_joules": {
+          "mean": 4.5831,
+          "std": 0.0,
+          "ci_95": [
+            4.5831,
+            4.5831
+          ]
+        },
+        "operational_recovery_cost": {
+          "mean": 0.0346,
+          "std": 0.0,
+          "ci_95": [
+            0.0346,
+            0.0346
+          ]
+        },
+        "precision": {
+          "mean": 26.92,
+          "std": 0.0,
+          "ci_95": [
+            26.92,
+            26.92
+          ]
+        },
+        "recall": {
+          "mean": 2.61,
+          "std": 0.0,
+          "ci_95": [
+            2.61,
+            2.61
+          ]
+        },
+        "f1": {
+          "mean": 4.76,
+          "std": 0.0,
+          "ci_95": [
+            4.76,
+            4.76
+          ]
+        },
+        "roc_auc": {
+          "mean": 0.6936,
+          "std": 0.0,
+          "ci_95": [
+            0.6936,
+            0.6936
+          ]
+        },
+        "pr_auc": {
+          "mean": 0.4139,
+          "std": 0.0,
+          "ci_95": [
+            0.4139,
+            0.4139
+          ]
+        },
+        "mttd_ms": 22531.491,
+        "diagnosis_latency_ms": 15707.797,
+        "recovery_latency_ms": 5244.947,
+        "end_to_end_latency_ms": 17272.802,
+        "availability_percent": 0.0,
+        "mttf_seconds": 0.0,
+        "mttr_seconds": 27.78,
+        "migration_bandwidth_kb_sec": 2791.71,
+        "recovery_summary": {
+          "total_recovery_episodes": 24,
+          "successful_recoveries": 21,
+          "recovery_success_rate": 0.875,
+          "mean_reward": 0.2617,
+          "mean_estimated_benefit": 0.357,
+          "mean_operational_cost": 0.3563,
+          "benefit_measurement_type": "SHADOW_SYNTHETIC_PROXY",
+          "measurement_notice": "Shadow-state proxy estimates; NOT physical hardware readings."
+        }
+      },
+      "trials": [
+        {
+          "seed": 42,
+          "eval_records": 1000,
+          "elapsed_seconds": 0.7336,
+          "throughput_rec_sec": 1282.77,
+          "per_record_latency_ms": 0.0581,
+          "per_record_latency_p95_ms": 0.1045,
+          "avg_cpu_percent": 95.88,
+          "peak_rss_mb": 312.72,
+          "bandwidth_kb_sec": 3248.36,
+          "migration_bandwidth_kb_sec": 2791.71,
+          "estimated_energy_joules": 4.5831,
+          "operational_recovery_cost": 0.0346,
+          "precision": 26.92,
+          "recall": 2.61,
+          "f1": 4.76,
+          "roc_auc": 0.6936,
+          "pr_auc": 0.4139,
+          "mttd_ms": 22531.491,
+          "diagnosis_latency_ms": 15707.797,
+          "recovery_latency_ms": 5244.947,
+          "end_to_end_latency_ms": 17272.802,
+          "availability_percent": 0.0,
+          "mttf_seconds": 0.0,
+          "mttr_seconds": 27.78,
+          "total_actions": 24,
+          "slo_violation_rate": 0.0,
+          "recovery_summary": {
+            "total_recovery_episodes": 24,
+            "successful_recoveries": 21,
+            "recovery_success_rate": 0.875,
+            "mean_reward": 0.2617,
+            "mean_estimated_benefit": 0.357,
+            "mean_operational_cost": 0.3563,
+            "benefit_measurement_type": "SHADOW_SYNTHETIC_PROXY",
+            "measurement_notice": "Shadow-state proxy estimates; NOT physical hardware readings."
+          }
+        }
+      ]
+    }
+  }
+}
